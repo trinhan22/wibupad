@@ -137,7 +137,6 @@
 <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        // 🔥 Đã thêm 'increment' vào danh sách import
         import { getFirestore, doc, getDoc, collection, query, orderBy, getDocs, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Config Firebase
@@ -167,7 +166,7 @@
                     document.getElementById('navStoryTitle').innerText = storyData.title;
                     document.getElementById('backBtn').href = `doc-truyen.html?id=${storyId}`;
                     
-                    // 🔥 GỌI HÀM TĂNG VIEW Ở ĐÂY
+                    // 🔥 GỌI HÀM TĂNG VIEW
                     incrementViewCount(storyId);
                 }
 
@@ -194,7 +193,6 @@
                 }
 
                 document.getElementById('loading').style.display = 'none';
-                // Cuộn lên đầu trang
                 window.scrollTo(0, 0);
 
             } catch (e) { 
@@ -203,27 +201,25 @@
             }
         }
 
-        // 🔥 HÀM MỚI: Tăng lượt xem (có chống spam F5)
+        // 🔥 HÀM MỚI: Đã tạm tắt chống spam để bạn dễ test
         async function incrementViewCount(id) {
-            // Tạo key session unique cho mỗi chương của mỗi truyện
-            const viewSessionKey = `viewed_${id}_${chapId}`;
-
-            // Kiểm tra xem user đã xem chương này trong phiên làm việc hiện tại chưa
-            if (sessionStorage.getItem(viewSessionKey)) {
-                return; // Nếu đã xem rồi thì không cộng nữa
-            }
+            // 👇 Khi nào test xong (F5 thấy số nhảy), bạn xóa dấu // ở 2 dòng dưới để bật lại chống spam nhé:
+            // const viewSessionKey = `viewed_${id}_${chapId}`;
+            // if (sessionStorage.getItem(viewSessionKey)) { console.log("Đã tính view rồi"); return; }
 
             try {
                 const storyRef = doc(db, "stories", id);
                 await updateDoc(storyRef, {
-                    views: increment(1) // Cộng thêm 1 vào field 'views'
+                    views: increment(1) 
                 });
                 
-                // Đánh dấu đã xem
-                sessionStorage.setItem(viewSessionKey, "true");
-                console.log("Đã tăng 1 lượt xem.");
+                // 👇 Xóa dấu // ở dòng dưới để bật lại chống spam
+                // sessionStorage.setItem(viewSessionKey, "true");
+                
+                console.log("✅ Đã cộng 1 view thành công trên Firebase!");
             } catch (error) {
-                console.error("Lỗi khi tăng view:", error);
+                console.error("❌ Lỗi khi tăng view:", error);
+                // Nếu báo lỗi đỏ ở đây, 100% là do Firebase Security Rules của bạn đang chặn người đọc sửa data.
             }
         }
 
@@ -231,31 +227,23 @@
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
 
-            // Xử lý nút Previous
             if (index > 0) {
                 prevBtn.disabled = false;
-                prevBtn.onclick = () => {
-                    window.location.href = `doc.html?storyId=${storyId}&chapId=${allChapterIds[index - 1]}`;
-                };
+                prevBtn.onclick = () => { window.location.href = `doc.html?storyId=${storyId}&chapId=${allChapterIds[index - 1]}`; };
             } else {
-                prevBtn.disabled = true; // Đảm bảo disable nếu là chap đầu
+                prevBtn.disabled = true;
             }
 
-            // Xử lý nút Next
             if (index < allChapterIds.length - 1) {
                 nextBtn.disabled = false;
                 nextBtn.classList.add('btn-main-nav');
-                nextBtn.onclick = () => {
-                    window.location.href = `doc.html?storyId=${storyId}&chapId=${allChapterIds[index + 1]}`;
-                };
+                nextBtn.onclick = () => { window.location.href = `doc.html?storyId=${storyId}&chapId=${allChapterIds[index + 1]}`; };
             } else {
-                nextBtn.disabled = true; // Đảm bảo disable nếu là chap cuối
+                nextBtn.disabled = true;
                 nextBtn.classList.remove('btn-main-nav');
             }
             
-            document.getElementById('tocBtn').onclick = () => {
-                window.location.href = `doc-truyen.html?id=${storyId}`;
-            };
+            document.getElementById('tocBtn').onclick = () => { window.location.href = `doc-truyen.html?id=${storyId}`; };
         }
 
         async function updateUserProgress(chapNum) {
@@ -265,27 +253,20 @@
                 const userSnap = await getDoc(userRef);
                 if (userSnap.exists()) {
                     let history = userSnap.data().history || [];
-                    
-                    // Tìm xem truyện này đã có trong lịch sử chưa
                     let foundIndex = history.findIndex(item => item.id === storyId);
                     
                     if (foundIndex !== -1) {
-                        // Nếu có rồi thì update chương mới nhất
                         history[foundIndex].lastChapter = chapNum;
                         history[foundIndex].updatedAt = new Date().toISOString();
                     } else {
-                        // Nếu chưa có thì thêm mới vào đầu mảng
-                        // (Cần lấy tiêu đề truyện và ảnh bìa nếu muốn lưu đầy đủ, 
-                        // nhưng ở đây tạm thời dùng ID để logic đơn giản)
                         const storyTitle = document.getElementById('navStoryTitle').innerText || "Truyện đang đọc";
                         history.unshift({
                             id: storyId,
-                            title: storyTitle, // Lưu tạm title lấy từ DOM
+                            title: storyTitle, 
                             lastChapter: chapNum,
                             updatedAt: new Date().toISOString()
                         });
                     }
-                    
                     await updateDoc(userRef, { history: history });
                 }
             } catch (e) { console.error("Lỗi lưu tiến độ:", e); }

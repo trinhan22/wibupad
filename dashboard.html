@@ -66,11 +66,6 @@
             font-size: 1.5rem; font-weight: 900; letter-spacing: -0.5px;
             background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
         }
-        .badge-studio { 
-            background: rgba(255, 255, 255, 0.05); color: #fff; 
-            padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; 
-            border: 1px solid rgba(255, 255, 255, 0.15); letter-spacing: 1px;
-        }
 
         .user-nav { display: flex; align-items: center; gap: 20px; }
         .btn-home {
@@ -91,7 +86,7 @@
         /* =========================================
            3. DASHBOARD CONTAINER
            ========================================= */
-        .container { max-width: 1280px; /* Tăng max-width lên chút */ margin: 110px auto 60px; padding: 0 24px; }
+        .container { max-width: 1280px; margin: 110px auto 60px; padding: 0 24px; }
 
         .welcome-section { margin-bottom: 50px; animation: slideUp 0.5s ease-out; }
         .welcome-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 8px; color: #fff; letter-spacing: -1px; }
@@ -128,7 +123,7 @@
         .stat-info p { margin: 6px 0 0; color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
 
         /* =========================================
-           4. STORIES LIST & CARDS (ĐÃ CHỈNH SỬA)
+           4. STORIES LIST & CARDS
            ========================================= */
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .section-title { font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
@@ -143,17 +138,14 @@
 
         .stories-grid { 
             display: grid; 
-            /* 🔥 THAY ĐỔI 1: Tăng min-width từ 360px lên 440px để card dài hơn */
             grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); 
             gap: 24px; 
         }
 
-        /* --- CARD DESIGN 2.0 --- */
         .story-card {
             background: var(--bg-card); border: 1px solid var(--glass-border); 
-            border-radius: var(--radius-lg); padding: 22px; /* Tăng padding xíu */
-            display: flex; gap: 24px; /* Tăng khoảng cách giữa ảnh và nội dung */
-            position: relative; overflow: hidden;
+            border-radius: var(--radius-lg); padding: 22px;
+            display: flex; gap: 24px; position: relative; overflow: hidden;
             transition: var(--transition);
         }
         .story-card:hover {
@@ -171,19 +163,17 @@
         .story-card:hover::before { opacity: 1; }
 
         .card-poster {
-            width: 120px; /* Tăng kích thước ảnh bìa một chút cho cân đối */
-            aspect-ratio: 2/3; border-radius: 12px; object-fit: cover;
+            width: 120px; aspect-ratio: 2/3; border-radius: 12px; object-fit: cover;
             box-shadow: 0 8px 20px rgba(0,0,0,0.4); flex-shrink: 0; transition: 0.4s;
         }
         .story-card:hover .card-poster { transform: scale(1.03); }
 
-        .card-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; position: relative; z-index: 2; min-width: 0; /* Fix lỗi flex item bị tràn */ }
+        .card-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; position: relative; z-index: 2; min-width: 0; }
         
-        /* Badges */
         .badge-group { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
         .card-status, .card-cat {
             font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
-            padding: 4px 10px; border-radius: 6px; white-space: nowrap; /* Ngăn xuống dòng trong badge */
+            padding: 4px 10px; border-radius: 6px; white-space: nowrap;
         }
         .status-draft { color: #fbbf24; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); }
         .status-published { color: #34d399; background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.2); }
@@ -198,48 +188,32 @@
         .card-stats {
             display: flex; align-items: center; gap: 15px; padding: 12px 0;
             border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06);
-            margin-bottom: 15px; flex-wrap: wrap; /* Cho phép wrap nếu tên quá dài */
+            margin-bottom: 15px; flex-wrap: wrap; 
         }
         .stat-item { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; font-weight: 500; white-space: nowrap; }
         .stat-item i { color: #71717a; }
 
-        /* Action Buttons (ĐÃ CHỈNH SỬA LẠI CHO LINH HOẠT) */
-        .card-actions { 
-            display: flex; 
-            gap: 10px; 
-            flex-wrap: wrap; /* 🔥 Cho phép các nút xuống dòng nếu không đủ chỗ */
-        }
+        .card-actions { display: flex; gap: 10px; flex-wrap: wrap; }
         .btn-icon-text {
             padding: 8px 14px; border-radius: 10px; font-weight: 600; font-size: 0.85rem;
             display: flex; align-items: center; justify-content: center; gap: 8px;
             cursor: pointer; transition: 0.2s; border: 1px solid transparent;
-            flex: 1 1 auto; /* Các nút tự co giãn */
-            min-width: 90px; /* Đảm bảo nút không bị quá bé */
-            white-space: nowrap;
+            flex: 1 1 auto; min-width: 90px; white-space: nowrap;
         }
 
-        /* Nút xóa nhỏ gọn hơn */
-        .btn-delete { 
-            flex: 0 0 auto !important; /* Không co giãn */
-            width: 42px; padding: 0 !important; 
-        }
+        .btn-delete { flex: 0 0 auto !important; width: 42px; padding: 0 !important; }
         
         .btn-write { background: #fff; color: #000; border-color: #fff; }
         .btn-write:hover { background: #e4e4e7; border-color: #e4e4e7; }
-
         .btn-edit { background: rgba(168, 85, 247, 0.1); color: #c084fc; border-color: rgba(168, 85, 247, 0.2); }
         .btn-edit:hover { background: #a855f7; color: #fff; border-color: #a855f7; }
-
         .btn-publish { background: rgba(52, 211, 153, 0.1); color: #34d399; border-color: rgba(52, 211, 153, 0.2); }
         .btn-publish:hover { background: #10b981; color: #fff; border-color: #10b981; }
-
         .btn-unpublish { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border-color: rgba(251, 191, 36, 0.2); }
         .btn-unpublish:hover { background: #f59e0b; color: #fff; border-color: #f59e0b; }
-
         .btn-delete { background: rgba(244, 63, 94, 0.1); color: #fb7185; border-color: rgba(244, 63, 94, 0.2); }
         .btn-delete:hover { background: #f43f5e; color: #fff; border-color: #f43f5e; }
 
-        /* Empty State */
         .empty-state { 
             grid-column: 1/-1; text-align: center; padding: 80px 0; 
             border: 2px dashed var(--glass-border); border-radius: var(--radius-lg); 
@@ -248,7 +222,7 @@
         .empty-icon { font-size: 3.5rem; margin-bottom: 20px; color: #27272a; }
 
         /* =========================================
-           5. MODAL & FORM (MODERNIZED)
+           5. MODAL & FORM 
            ========================================= */
         .modal-overlay { 
             position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; 
@@ -258,11 +232,12 @@
         .modal-overlay.active { display: flex; opacity: 1; }
         
         .modal-box { 
-            background: #18181b; width: 550px; max-width: 90%; 
+            background: #18181b; width: 600px; max-width: 90%; 
             padding: 40px; border-radius: 24px; 
             border: 1px solid rgba(255,255,255,0.1); 
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
             transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 90vh; overflow-y: auto;
         }
         .modal-overlay.active .modal-box { transform: scale(1); }
 
@@ -280,7 +255,6 @@
             background: #09090b; border-color: var(--primary); 
             box-shadow: 0 0 0 4px rgba(255, 94, 98, 0.15); 
         }
-        .form-control::placeholder { color: #52525b; }
         
         /* Modal Buttons */
         .modal-actions { display: flex; gap: 16px; margin-top: 40px; }
@@ -295,6 +269,7 @@
             transition: 0.2s; box-shadow: 0 10px 20px -5px var(--primary-glow);
         }
         .btn-confirm-modal:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .btn-confirm-modal:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
         /* Toast */
         #toast-container { position: fixed; top: 30px; right: 30px; z-index: 10000; pointer-events: none; }
@@ -311,12 +286,48 @@
 
         @media (max-width: 768px) {
             .stats-grid { grid-template-columns: 1fr; }
-            /* Trên mobile thì quay về 1 cột, chiều rộng tự động */
             .stories-grid { grid-template-columns: 1fr; } 
             .logo-studio .brand { display: none; }
-            .story-card { flex-direction: column; } /* Trên mobile, ảnh nằm trên nội dung cho thoáng */
-            .card-poster { width: 100%; aspect-ratio: 21/9; } /* Ảnh nằm ngang trên mobile */
+            .story-card { flex-direction: column; } 
+            .card-poster { width: 100%; aspect-ratio: 21/9; } 
         }
+
+        /* --- KHOẢNG CHỨA UPLOAD ẢNH --- */
+        .upload-area {
+            display: flex; gap: 20px; align-items: flex-start;
+            background: #27272a; padding: 15px; border-radius: 12px; border: 1px dashed var(--glass-border);
+        }
+        .preview-img {
+            width: 100px; aspect-ratio: 2/3; object-fit: cover;
+            border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            background: #000; border: 1px solid #444;
+        }
+        .upload-controls { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
+        .file-input-btn {
+            border: 1px solid var(--primary); color: var(--primary); background: rgba(255,94,98,0.1);
+            padding: 8px 15px; border-radius: 8px; font-weight: 600; font-size: 0.9rem;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        .file-input-wrapper:hover .file-input-btn { background: var(--primary); color: #fff; }
+        .file-input-wrapper input[type=file] {
+            font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer;
+        }
+
+        /* 🔥 CSS CHO TÍNH NĂNG HASHTAG (MỚI) 🔥 */
+        .tags-container {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;
+        }
+        .tag-badge {
+            background: rgba(255, 94, 98, 0.15); color: var(--primary);
+            border: 1px solid rgba(255, 94, 98, 0.3); padding: 5px 12px;
+            border-radius: 50px; font-size: 0.85rem; font-weight: 600;
+            display: flex; align-items: center; gap: 6px; transition: 0.2s;
+        }
+        .tag-badge i { 
+            cursor: pointer; opacity: 0.7; font-size: 0.8rem;
+        }
+        .tag-badge i:hover { opacity: 1; color: #fff; }
     </style>
 </head>
 <body>
@@ -407,13 +418,33 @@
             </div>
 
             <div class="form-group">
+                <label>Tags (Từ khóa tìm kiếm)</label>
+                <input type="text" id="storyTagsInput" class="form-control" placeholder="Nhập tag (VD: hethong, ngot) và nhấn Enter...">
+                <div id="tagsContainer" class="tags-container">
+                    </div>
+                <p style="color: #a1a1aa; font-size: 0.8rem; margin-top: 8px;">Nhấn <b>Enter</b> hoặc dấu phẩy ( <b>,</b> ) để thêm tag.</p>
+            </div>
+
+            <div class="form-group">
                 <label>Mô tả ngắn</label>
-                <textarea id="storyDesc" class="form-control" rows="4" placeholder="Giới thiệu sơ lược về nội dung..."></textarea>
+                <textarea id="storyDesc" class="form-control" rows="3" placeholder="Giới thiệu sơ lược về nội dung..."></textarea>
             </div>
             
             <div class="form-group">
-                <label>Link ảnh bìa (URL)</label>
-                <input type="text" id="storyCover" class="form-control" placeholder="https://imgur.com/...">
+                <label>Ảnh bìa truyện (Tỉ lệ 2:3)</label>
+                <div class="upload-area">
+                    <img id="coverPreview" src="https://via.placeholder.com/200x300/222/555?text=Preview" class="preview-img">
+                    <div class="upload-controls">
+                        <div class="file-input-wrapper">
+                            <div class="file-input-btn">
+                                <i class="fas fa-upload"></i> Chọn ảnh từ máy
+                            </div>
+                            <input type="file" id="storyCoverFile" accept="image/*">
+                        </div>
+                        <p style="color: #a1a1aa; font-size: 0.8rem; margin: 0;">Khuyên dùng ảnh JPG/PNG. Dung lượng < 2MB.</p>
+                        <input type="hidden" id="oldCoverUrl">
+                    </div>
+                </div>
             </div>
             
             <input type="hidden" id="editStoryId">
@@ -429,15 +460,20 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         // Config Firebase
         const firebaseConfig = { apiKey: "AIzaSyAT6SnKojUmsisDhnuEtsL3H59NwrhZxDc", authDomain: "hopphim-29e1c.firebaseapp.com", projectId: "hopphim-29e1c", storageBucket: "hopphim-29e1c.firebasestorage.app", messagingSenderId: "1076044580405", appId: "1:1076044580405:web:a3485f8533604f305e537c", measurementId: "G-6RT4CX2NR0" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app); 
 
         let currentUserId = null;
         let storiesCache = {}; 
+        
+        // 🔥 BIẾN LƯU TRỮ TAG HIỆN TẠI 🔥
+        let currentTags = [];
 
         // HIỂN THỊ NGÀY THÁNG
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -454,6 +490,79 @@
                 window.location.href = '/login.html';
             }
         });
+
+        /* =========================================
+           🔥 LOGIC XỬ LÝ HASHTAG (MỚI) 🔥
+           ========================================= */
+        const tagsInput = document.getElementById('storyTagsInput');
+        const tagsContainer = document.getElementById('tagsContainer');
+
+        // Hàm vẽ UI cho tag
+        function renderTags() {
+            tagsContainer.innerHTML = '';
+            currentTags.forEach((tag, index) => {
+                tagsContainer.innerHTML += `
+                    <span class="tag-badge">
+                        #${tag} <i class="fas fa-times" onclick="removeTag(${index})"></i>
+                    </span>
+                `;
+            });
+        }
+
+        // Hàm xóa tag khi bấm dấu X
+        window.removeTag = (index) => {
+            currentTags.splice(index, 1);
+            renderTags();
+        }
+
+        // Bắt sự kiện khi gõ vào ô input Tag
+        tagsInput.addEventListener('keydown', function(e) {
+            // Khi bấm Enter hoặc dấu phẩy
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault(); // Chặn việc submit form mặc định
+                
+                // Lấy chữ, xóa khoảng trắng thừa, và xóa dấu # nếu user lỡ tay gõ
+                let tagStr = tagsInput.value.trim().replace(/^#/, ''); 
+                
+                if (tagStr !== '') {
+                    // Cắt các tag theo dấu phẩy (trường hợp user copy paste: "a, b, c")
+                    let tagsArray = tagStr.split(',').map(t => t.trim().replace(/^#/, '')).filter(t => t !== '');
+                    
+                    tagsArray.forEach(tag => {
+                        // Tránh trùng lặp tag
+                        if (!currentTags.includes(tag)) {
+                            currentTags.push(tag);
+                        }
+                    });
+                    
+                    renderTags(); // Cập nhật lại UI
+                }
+                tagsInput.value = ''; // Làm sạch ô input
+            }
+        });
+
+
+        // XỬ LÝ HIỂN THỊ ẢNH XEM TRƯỚC (PREVIEW) KHI CHỌN FILE
+        document.getElementById('storyCoverFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('coverPreview').src = event.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // HÀM HỖ TRỢ UPLOAD ẢNH LÊN FIREBASE STORAGE
+        async function uploadImageToStorage(file) {
+            if (!file) return null;
+            const uniqueFileName = `covers/${currentUserId}_${Date.now()}_${file.name}`;
+            const storageRef = ref(storage, uniqueFileName);
+            await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(storageRef);
+            return downloadURL;
+        }
 
         // TẢI DANH SÁCH TRUYỆN
         async function loadMyStories() {
@@ -561,8 +670,17 @@
             document.getElementById('editStoryId').value = ''; 
             document.getElementById('storyTitle').value = '';
             document.getElementById('storyDesc').value = '';
-            document.getElementById('storyCover').value = '';
             document.getElementById('storyCategory').selectedIndex = 0;
+            
+            // 🔥 Xóa Tags cũ
+            currentTags = [];
+            renderTags();
+            document.getElementById('storyTagsInput').value = '';
+
+            // Reset File input và Preview
+            document.getElementById('storyCoverFile').value = '';
+            document.getElementById('oldCoverUrl').value = '';
+            document.getElementById('coverPreview').src = 'https://via.placeholder.com/200x300/222/555?text=Preview';
             
             document.getElementById('btnSaveStory').innerText = "Tạo Tác Phẩm";
             document.querySelector('.modal-title').innerText = "Tác phẩm mới";
@@ -577,8 +695,17 @@
             document.getElementById('editStoryId').value = id;
             document.getElementById('storyTitle').value = data.title;
             document.getElementById('storyDesc').value = data.desc;
-            document.getElementById('storyCover').value = data.cover;
             document.getElementById('storyCategory').value = data.category;
+
+            // 🔥 Đổ Tags từ Firebase ra (nếu có)
+            currentTags = data.tags || [];
+            renderTags();
+            document.getElementById('storyTagsInput').value = '';
+
+            // Xử lý hiển thị ảnh cũ
+            document.getElementById('storyCoverFile').value = ''; 
+            document.getElementById('oldCoverUrl').value = data.cover || ''; 
+            document.getElementById('coverPreview').src = data.cover || 'https://via.placeholder.com/200x300/222/555?text=Preview';
 
             document.getElementById('btnSaveStory').innerText = "Lưu Thay Đổi";
             document.querySelector('.modal-title').innerText = "Chỉnh sửa thông tin";
@@ -590,7 +717,6 @@
 
         window.handleFormSubmit = async () => {
             const editId = document.getElementById('editStoryId').value;
-            
             if (editId) {
                 await updateStory(editId); 
             } else {
@@ -602,20 +728,29 @@
             const btn = document.getElementById('btnSaveStory');
             const title = document.getElementById('storyTitle').value.trim();
             const desc = document.getElementById('storyDesc').value.trim();
-            const cover = document.getElementById('storyCover').value.trim();
             const category = document.getElementById('storyCategory').value;
+            
+            const fileInput = document.getElementById('storyCoverFile');
+            const file = fileInput.files[0];
 
             if(!title || !category) { showToast("Vui lòng điền đủ Tên và Thể loại!", "error"); return; }
 
-            btn.innerText = "Đang tạo...";
+            btn.innerText = "Đang tải ảnh & lưu...";
             btn.disabled = true;
 
             try {
+                let finalCoverUrl = "https://via.placeholder.com/400x600/222/555?text=No+Cover";
+                if (file) {
+                    finalCoverUrl = await uploadImageToStorage(file);
+                }
+
+                // 🔥 Đã thêm trường tags: currentTags
                 const docRef = await addDoc(collection(db, "stories"), {
                     title: title, 
                     desc: desc,
-                    cover: cover || "https://via.placeholder.com/400x600/222/555?text=Cover",
+                    cover: finalCoverUrl, 
                     category: category,
+                    tags: currentTags, 
                     authorId: currentUserId, 
                     authorName: auth.currentUser.displayName,
                     chapterCount: 0, 
@@ -637,21 +772,32 @@
             const btn = document.getElementById('btnSaveStory');
             const title = document.getElementById('storyTitle').value.trim();
             const desc = document.getElementById('storyDesc').value.trim();
-            const cover = document.getElementById('storyCover').value.trim();
             const category = document.getElementById('storyCategory').value;
+            
+            const fileInput = document.getElementById('storyCoverFile');
+            const file = fileInput.files[0];
+            const oldCover = document.getElementById('oldCoverUrl').value;
 
             if(!title || !category) { showToast("Vui lòng điền đủ thông tin!", "error"); return; }
 
-            btn.innerText = "Đang lưu...";
+            btn.innerText = "Đang lưu thay đổi...";
             btn.disabled = true;
 
             try {
+                let finalCoverUrl = oldCover; 
+                if (file) {
+                    btn.innerText = "Đang tải ảnh mới...";
+                    finalCoverUrl = await uploadImageToStorage(file); 
+                }
+
+                // 🔥 Đã thêm trường tags: currentTags
                 const storyRef = doc(db, "stories", id);
                 await updateDoc(storyRef, {
                     title: title,
                     desc: desc,
-                    cover: cover,
-                    category: category
+                    cover: finalCoverUrl, 
+                    category: category,
+                    tags: currentTags 
                 });
 
                 showToast("Đã cập nhật thông tin!");
