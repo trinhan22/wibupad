@@ -12,205 +12,310 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- CORE SYSTEM --- */
+        /* =========================================
+           1. CORE SYSTEM & VARIABLES
+           ========================================= */
         :root {
-            --bg-body: #0a0a0a;
-            --bg-card: #161616;
+            --bg-body: #09090b;
+            --bg-card: #18181b;
+            --bg-card-hover: #27272a;
             --primary: #FF5E62;
+            --primary-glow: rgba(255, 94, 98, 0.4);
             --primary-gradient: linear-gradient(135deg, #FF9966 0%, #FF5E62 100%);
+            --glass-bg: rgba(24, 24, 27, 0.6);
             --glass-border: rgba(255, 255, 255, 0.08);
-            --text: #ffffff;
-            --text-muted: #888;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
             --font-main: 'Be Vietnam Pro', sans-serif;
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-        body { font-family: var(--font-main); background-color: var(--bg-body); color: var(--text); overflow-x: hidden; }
         
+        body { 
+            font-family: var(--font-main); 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            overflow-x: hidden; 
+            line-height: 1.6;
+        }
+        
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-body); }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-        /* --- HEADER FIXED --- */
+        /* =========================================
+           2. HEADER (GLASS EFFECT)
+           ========================================= */
         header {
-            position: fixed; top: 0; width: 100%; height: 70px; padding: 0 4%;
+            position: fixed; top: 0; width: 100%; height: 75px; padding: 0 4%;
             display: flex; justify-content: space-between; align-items: center;
-            z-index: 1000; background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(20px);
+            z-index: 1000; 
+            background: rgba(9, 9, 11, 0.8); 
+            backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--glass-border);
         }
 
         .logo-studio { display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; }
-        .logo-studio img { height: 38px; width: auto; object-fit: contain; }
-        .logo-studio .brand { font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo-studio img { height: 40px; width: auto; object-fit: contain; }
+        .logo-studio .brand { 
+            font-size: 1.5rem; font-weight: 900; letter-spacing: -0.5px;
+            background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+        }
         .badge-studio { 
-            background: rgba(255, 255, 255, 0.1); color: #fff; 
-            padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; 
-            border: 1px solid rgba(255, 255, 255, 0.2); letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.05); color: #fff; 
+            padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; 
+            border: 1px solid rgba(255, 255, 255, 0.15); letter-spacing: 1px;
         }
 
         .user-nav { display: flex; align-items: center; gap: 20px; }
         .btn-home {
-            background: transparent; border: 1px solid #333; color: #ccc;
-            padding: 8px 15px; border-radius: 50px; font-size: 0.9rem; font-weight: 600;
-            cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px;
+            background: transparent; border: 1px solid var(--glass-border); color: var(--text-muted);
+            padding: 8px 18px; border-radius: 50px; font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 8px;
         }
-        .btn-home:hover { border-color: #fff; color: #fff; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); cursor: pointer; object-fit: cover; transition: 0.3s; }
-        .user-avatar:hover { transform: scale(1.1); }
+        .btn-home:hover { border-color: var(--primary); color: #fff; background: rgba(255, 94, 98, 0.05); }
+        .user-avatar { 
+            width: 42px; height: 42px; border-radius: 50%; 
+            border: 2px solid transparent; 
+            background-image: linear-gradient(var(--bg-body), var(--bg-body)), var(--primary-gradient);
+            background-origin: border-box; background-clip: content-box, border-box;
+            cursor: pointer; object-fit: cover; transition: var(--transition); 
+        }
+        .user-avatar:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--primary-glow); }
 
-        /* --- MAIN CONTAINER --- */
-        .container { max-width: 1200px; margin: 100px auto 50px; padding: 0 20px; }
+        /* =========================================
+           3. DASHBOARD CONTAINER
+           ========================================= */
+        .container { max-width: 1280px; /* Tăng max-width lên chút */ margin: 110px auto 60px; padding: 0 24px; }
 
-        .welcome-section { margin-bottom: 40px; }
-        .welcome-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 5px; color: #fff; }
-        .welcome-date { color: var(--text-muted); font-size: 1rem; }
+        .welcome-section { margin-bottom: 50px; animation: slideUp 0.5s ease-out; }
+        .welcome-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 8px; color: #fff; letter-spacing: -1px; }
+        .welcome-date { color: var(--text-muted); font-size: 1.05rem; }
 
         /* --- STATS GRID --- */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 50px; }
+        .stats-grid { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 24px; margin-bottom: 60px; animation: slideUp 0.6s ease-out; 
+        }
         .stat-card {
             background: var(--bg-card); border: 1px solid var(--glass-border);
-            padding: 25px; border-radius: 20px; display: flex; align-items: center; gap: 20px;
-            transition: var(--transition);
+            padding: 30px; border-radius: var(--radius-lg); 
+            display: flex; align-items: center; gap: 24px;
+            transition: var(--transition); position: relative; overflow: hidden;
         }
-        .stat-card:hover { transform: translateY(-5px); border-color: rgba(255, 94, 98, 0.3); background: rgba(255,255,255,0.02); }
-        .stat-icon { width: 60px; height: 60px; border-radius: 16px; background: rgba(255, 94, 98, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
-        .stat-info h3 { font-size: 2rem; font-weight: 800; margin: 0; line-height: 1; color: #fff; }
-        .stat-info p { margin: 5px 0 0; color: var(--text-muted); font-size: 0.9rem; }
+        .stat-card:hover { 
+            transform: translateY(-5px); 
+            border-color: rgba(255, 94, 98, 0.3); 
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); 
+        }
+        .stat-card::after {
+            content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100%;
+            background: linear-gradient(to left, rgba(255,255,255,0.03), transparent);
+            pointer-events: none;
+        }
+        .stat-icon { 
+            width: 64px; height: 64px; border-radius: 18px; 
+            background: rgba(255, 94, 98, 0.1); color: var(--primary); 
+            display: flex; align-items: center; justify-content: center; font-size: 1.8rem; 
+            box-shadow: 0 8px 16px -4px rgba(255, 94, 98, 0.2);
+        }
+        .stat-info h3 { font-size: 2.2rem; font-weight: 800; margin: 0; line-height: 1; color: #fff; letter-spacing: -1px; }
+        .stat-info p { margin: 6px 0 0; color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
 
-        /* --- STORIES SECTION --- */
+        /* =========================================
+           4. STORIES LIST & CARDS (ĐÃ CHỈNH SỬA)
+           ========================================= */
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .section-title { font-size: 1.5rem; font-weight: 700; color: #fff; }
+        .section-title { font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
         
         .btn-create {
-            background: var(--primary-gradient); color: #fff; border: none; padding: 12px 25px;
-            border-radius: 50px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px;
-            box-shadow: 0 5px 15px rgba(255, 94, 98, 0.3); transition: var(--transition);
+            background: var(--primary-gradient); color: #fff; border: none; padding: 12px 28px;
+            border-radius: 50px; font-weight: 700; font-size: 0.95rem; cursor: pointer; 
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 8px 20px -4px var(--primary-glow); transition: var(--transition);
         }
-        .btn-create:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(255, 94, 98, 0.5); }
+        .btn-create:hover { transform: translateY(-2px); box-shadow: 0 12px 25px -5px var(--primary-glow); filter: brightness(1.1); }
 
         .stories-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
-            gap: 25px; 
+            /* 🔥 THAY ĐỔI 1: Tăng min-width từ 360px lên 440px để card dài hơn */
+            grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); 
+            gap: 24px; 
         }
 
-        /* --- CARD DESIGN --- */
+        /* --- CARD DESIGN 2.0 --- */
         .story-card {
-            background: #121212; border: 1px solid var(--glass-border); border-radius: 20px;
-            padding: 20px; display: flex; gap: 20px; position: relative; overflow: hidden;
+            background: var(--bg-card); border: 1px solid var(--glass-border); 
+            border-radius: var(--radius-lg); padding: 22px; /* Tăng padding xíu */
+            display: flex; gap: 24px; /* Tăng khoảng cách giữa ảnh và nội dung */
+            position: relative; overflow: hidden;
             transition: var(--transition);
         }
-        .story-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--primary-gradient); opacity: 0; transition: 0.3s;
-        }
         .story-card:hover {
-            transform: translateY(-5px); background: #181818;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5); border-color: rgba(255, 94, 98, 0.3);
+            background: var(--bg-card-hover);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+        }
+        
+        .story-card::before {
+            content: ''; position: absolute; inset: 0; 
+            background: linear-gradient(to right, rgba(255, 94, 98, 0.03), transparent);
+            opacity: 0; transition: 0.3s; pointer-events: none;
         }
         .story-card:hover::before { opacity: 1; }
 
         .card-poster {
-            width: 100px; aspect-ratio: 2/3; border-radius: 10px; object-fit: cover;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5); flex-shrink: 0; transition: 0.3s;
+            width: 120px; /* Tăng kích thước ảnh bìa một chút cho cân đối */
+            aspect-ratio: 2/3; border-radius: 12px; object-fit: cover;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4); flex-shrink: 0; transition: 0.4s;
         }
-        .story-card:hover .card-poster { transform: scale(1.05); }
+        .story-card:hover .card-poster { transform: scale(1.03); }
 
-        .card-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; position: relative; z-index: 2; min-width: 0; /* Fix lỗi flex item bị tràn */ }
         
-        .card-header { margin-bottom: 10px; }
-        
-        /* Status Badges */
-        .card-status {
-            font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-            margin-bottom: 5px; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-right: 5px;
+        /* Badges */
+        .badge-group { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+        .card-status, .card-cat {
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 4px 10px; border-radius: 6px; white-space: nowrap; /* Ngăn xuống dòng trong badge */
         }
-        .status-draft { color: #f39c12; background: rgba(241, 196, 15, 0.1); border: 1px solid rgba(241, 196, 15, 0.2); }
-        .status-published { color: #2ecc71; background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.2); }
-        
-        /* Category Badge */
-        .card-cat {
-            font-size: 0.7rem; font-weight: 600; color: #3498db; background: rgba(52, 152, 219, 0.1);
-            border: 1px solid rgba(52, 152, 219, 0.2); padding: 2px 8px; border-radius: 4px; display: inline-block;
-        }
+        .status-draft { color: #fbbf24; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); }
+        .status-published { color: #34d399; background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.2); }
+        .card-cat { color: #60a5fa; background: rgba(96, 165, 250, 0.1); border: 1px solid rgba(96, 165, 250, 0.2); }
 
         .card-title {
-            font-size: 1.1rem; font-weight: 700; color: #fff; line-height: 1.4;
+            font-size: 1.25rem; font-weight: 700; color: #fff; line-height: 1.4;
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+            margin-bottom: 8px;
         }
 
         .card-stats {
-            display: flex; align-items: center; gap: 15px; padding: 10px 0;
-            border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);
-            margin-bottom: 15px;
+            display: flex; align-items: center; gap: 15px; padding: 12px 0;
+            border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 15px; flex-wrap: wrap; /* Cho phép wrap nếu tên quá dài */
         }
-        .stat-item { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
-        .stat-item i { color: #ccc; }
+        .stat-item { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; font-weight: 500; white-space: nowrap; }
+        .stat-item i { color: #71717a; }
 
-        .card-actions { display: flex; gap: 8px; }
-        .btn-icon-text {
-            flex: 1; padding: 8px; border-radius: 8px; font-weight: 600; font-size: 0.85rem;
-            display: flex; align-items: center; justify-content: center; gap: 5px;
-            cursor: pointer; transition: 0.2s; border: none;
-        }
-        .card-overlay {
-            position: absolute; 
-            inset: 0; 
-            background: rgba(0,0,0,0.5);
+        /* Action Buttons (ĐÃ CHỈNH SỬA LẠI CHO LINH HOẠT) */
+        .card-actions { 
             display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 12px;
-            opacity: 0; 
-            transition: 0.3s ease; 
-            backdrop-filter: blur(3px);
-            z-index: 5;
+            gap: 10px; 
+            flex-wrap: wrap; /* 🔥 Cho phép các nút xuống dòng nếu không đủ chỗ */
         }
-        /* Action Buttons */
-        .btn-write { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
-        .btn-write:hover { background: #fff; color: #000; }
+        .btn-icon-text {
+            padding: 8px 14px; border-radius: 10px; font-weight: 600; font-size: 0.85rem;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; transition: 0.2s; border: 1px solid transparent;
+            flex: 1 1 auto; /* Các nút tự co giãn */
+            min-width: 90px; /* Đảm bảo nút không bị quá bé */
+            white-space: nowrap;
+        }
 
-        .btn-publish { background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
-        .btn-publish:hover { background: #2ecc71; color: #fff; }
+        /* Nút xóa nhỏ gọn hơn */
+        .btn-delete { 
+            flex: 0 0 auto !important; /* Không co giãn */
+            width: 42px; padding: 0 !important; 
+        }
+        
+        .btn-write { background: #fff; color: #000; border-color: #fff; }
+        .btn-write:hover { background: #e4e4e7; border-color: #e4e4e7; }
 
-        .btn-unpublish { background: rgba(243, 156, 18, 0.1); color: #f39c12; border: 1px solid rgba(243, 156, 18, 0.2); }
-        .btn-unpublish:hover { background: #f39c12; color: #fff; }
+        .btn-edit { background: rgba(168, 85, 247, 0.1); color: #c084fc; border-color: rgba(168, 85, 247, 0.2); }
+        .btn-edit:hover { background: #a855f7; color: #fff; border-color: #a855f7; }
 
-        .btn-delete { width: 35px; flex: none; background: transparent; color: #666; border: 1px solid rgba(255,255,255,0.1); }
-        .btn-delete:hover { background: #222; color: #ff4757; border-color: #ff4757; }
+        .btn-publish { background: rgba(52, 211, 153, 0.1); color: #34d399; border-color: rgba(52, 211, 153, 0.2); }
+        .btn-publish:hover { background: #10b981; color: #fff; border-color: #10b981; }
+
+        .btn-unpublish { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border-color: rgba(251, 191, 36, 0.2); }
+        .btn-unpublish:hover { background: #f59e0b; color: #fff; border-color: #f59e0b; }
+
+        .btn-delete { background: rgba(244, 63, 94, 0.1); color: #fb7185; border-color: rgba(244, 63, 94, 0.2); }
+        .btn-delete:hover { background: #f43f5e; color: #fff; border-color: #f43f5e; }
 
         /* Empty State */
-        .empty-state { grid-column: 1/-1; text-align: center; padding: 80px 0; border: 2px dashed var(--glass-border); border-radius: 20px; color: var(--text-muted); }
-        .empty-icon { font-size: 3rem; margin-bottom: 20px; color: #333; }
+        .empty-state { 
+            grid-column: 1/-1; text-align: center; padding: 80px 0; 
+            border: 2px dashed var(--glass-border); border-radius: var(--radius-lg); 
+            color: var(--text-muted); background: rgba(255,255,255,0.01);
+        }
+        .empty-icon { font-size: 3.5rem; margin-bottom: 20px; color: #27272a; }
 
-        /* --- MODAL & TOAST --- */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
-        .modal-overlay.active { display: flex; animation: fadeIn 0.3s; }
-        .modal-box { background: #161616; width: 500px; padding: 35px; border-radius: 24px; border: 1px solid var(--glass-border); box-shadow: 0 30px 80px rgba(0,0,0,0.8); }
+        /* =========================================
+           5. MODAL & FORM (MODERNIZED)
+           ========================================= */
+        .modal-overlay { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; 
+            display: none; justify-content: center; align-items: center; 
+            backdrop-filter: blur(8px); opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
         
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; font-size: 0.9rem; }
+        .modal-box { 
+            background: #18181b; width: 550px; max-width: 90%; 
+            padding: 40px; border-radius: 24px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
+            transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+
+        .modal-title { font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 30px; letter-spacing: -0.5px; }
+        
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; color: #d4d4d8; margin-bottom: 10px; font-weight: 600; font-size: 0.95rem; }
         .form-control { 
-            width: 100%; padding: 14px; background: #0a0a0a; border: 1px solid var(--glass-border); 
+            width: 100%; padding: 14px 16px; 
+            background: #27272a; border: 1px solid transparent; 
             border-radius: 12px; color: #fff; transition: 0.3s; font-size: 1rem; 
             font-family: var(--font-main);
         }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(255, 94, 98, 0.1); }
+        .form-control:focus { 
+            background: #09090b; border-color: var(--primary); 
+            box-shadow: 0 0 0 4px rgba(255, 94, 98, 0.15); 
+        }
+        .form-control::placeholder { color: #52525b; }
         
-        /* Select option style */
-        select.form-control option { background: #161616; color: #fff; padding: 10px; }
-        
-        #toast-container { position: fixed; top: 30px; right: 30px; z-index: 10000; }
-        .toast { background: #222; border-left: 4px solid var(--primary); color: #fff; padding: 15px 25px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: slideIn 0.4s; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        /* Modal Buttons */
+        .modal-actions { display: flex; gap: 16px; margin-top: 40px; }
+        .btn-cancel { 
+            flex: 1; background: #27272a; color: #fff; padding: 14px; 
+            border-radius: 50px; font-weight: 700; border: none; cursor: pointer; transition: 0.2s;
+        }
+        .btn-cancel:hover { background: #3f3f46; }
+        .btn-confirm-modal { 
+            flex: 2; background: var(--primary-gradient); color: #fff; padding: 14px; 
+            border-radius: 50px; font-weight: 700; border: none; cursor: pointer; 
+            transition: 0.2s; box-shadow: 0 10px 20px -5px var(--primary-glow);
+        }
+        .btn-confirm-modal:hover { filter: brightness(1.1); transform: translateY(-2px); }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideIn { from { transform: translateX(100%); } }
+        /* Toast */
+        #toast-container { position: fixed; top: 30px; right: 30px; z-index: 10000; pointer-events: none; }
+        .toast { 
+            background: rgba(24, 24, 27, 0.9); backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); 
+            color: #fff; padding: 16px 24px; border-radius: 12px; margin-bottom: 12px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: slideIn 0.4s; 
+            font-weight: 600; display: flex; align-items: center; gap: 12px; pointer-events: auto;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
 
         @media (max-width: 768px) {
             .stats-grid { grid-template-columns: 1fr; }
-            .stories-grid { grid-template-columns: 1fr; }
+            /* Trên mobile thì quay về 1 cột, chiều rộng tự động */
+            .stories-grid { grid-template-columns: 1fr; } 
             .logo-studio .brand { display: none; }
+            .story-card { flex-direction: column; } /* Trên mobile, ảnh nằm trên nội dung cho thoáng */
+            .card-poster { width: 100%; aspect-ratio: 21/9; } /* Ảnh nằm ngang trên mobile */
         }
     </style>
 </head>
@@ -221,8 +326,7 @@
     <header>
         <a href="/" class="logo-studio">
             <img src="logo.png" alt="WibuPad">
-            <span class="brand">WIBUPAD</span>
-            <span class="badge-studio">STUDIO</span>
+            <span class="brand">WIBUPAD <span style="font-weight:300; opacity:0.7;">STUDIO</span></span>
         </a>
         <div class="user-nav">
             <button class="btn-home" onclick="window.location.href='/'">
@@ -234,7 +338,7 @@
 
     <main class="container">
         <div class="welcome-section">
-            <h1 class="welcome-title">Xin chào, <span id="userName" style="color: #FF5E62;">Tác giả</span>!</h1>
+            <h1 class="welcome-title">Xin chào, <span id="userName" style="background: linear-gradient(135deg, #FF9966, #FF5E62); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tác giả</span>!</h1>
             <p class="welcome-date" id="currentDate">Hôm nay là một ngày tuyệt vời để sáng tác.</p>
         </div>
 
@@ -247,14 +351,14 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-eye"></i></div>
+                <div class="stat-icon" style="background: rgba(96, 165, 250, 0.1); color: #60a5fa;"><i class="fas fa-eye"></i></div>
                 <div class="stat-info">
                     <h3><span id="statViews">0</span></h3>
-                    <p>Lượt đọc</p>
+                    <p>Tổng lượt đọc</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-pen-fancy"></i></div>
+                <div class="stat-icon" style="background: rgba(52, 211, 153, 0.1); color: #34d399;"><i class="fas fa-pen-fancy"></i></div>
                 <div class="stat-info">
                     <h3><span id="statChapters">0</span></h3>
                     <p>Chương đã viết</p>
@@ -263,14 +367,14 @@
         </div>
 
         <div class="section-header">
-            <div class="section-title">Danh sách tác phẩm</div>
+            <div class="section-title">Quản lý tác phẩm</div>
             <button class="btn-create" onclick="openCreateModal()">
                 <i class="fas fa-plus"></i> Truyện mới
             </button>
         </div>
 
-        <div id="loading" style="text-align: center; padding: 40px; color: #666;">
-            <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem;"></i>
+        <div id="loading" style="text-align: center; padding: 60px; color: #52525b;">
+            <i class="fas fa-circle-notch fa-spin" style="font-size: 2.5rem;"></i>
         </div>
 
         <div class="stories-grid" id="storiesList">
@@ -279,10 +383,11 @@
 
     <div id="createModal" class="modal-overlay">
         <div class="modal-box">
-            <h2 style="margin-bottom: 25px; font-size: 1.5rem; font-weight: 800; color: #fff;">Tác phẩm mới</h2>
+            <h2 class="modal-title">Thông tin tác phẩm</h2>
+            
             <div class="form-group">
                 <label>Tên truyện</label>
-                <input type="text" id="storyTitle" class="form-control" placeholder="Nhập tên truyện...">
+                <input type="text" id="storyTitle" class="form-control" placeholder="Nhập tên tác phẩm ấn tượng...">
             </div>
             
             <div class="form-group">
@@ -303,20 +408,24 @@
 
             <div class="form-group">
                 <label>Mô tả ngắn</label>
-                <textarea id="storyDesc" class="form-control" rows="3" placeholder="Nội dung chính..."></textarea>
+                <textarea id="storyDesc" class="form-control" rows="4" placeholder="Giới thiệu sơ lược về nội dung..."></textarea>
             </div>
+            
             <div class="form-group">
                 <label>Link ảnh bìa (URL)</label>
-                <input type="text" id="storyCover" class="form-control" placeholder="https://...">
+                <input type="text" id="storyCover" class="form-control" placeholder="https://imgur.com/...">
             </div>
-            <div style="display: flex; gap: 15px; margin-top: 35px;">
-                <button class="btn-create" style="flex: 1; background: #222; box-shadow:none; justify-content:center;" onclick="closeCreateModal()">Hủy</button>
-                <button class="btn-create" style="flex: 1; justify-content:center;" onclick="handleSaveStory()">Tạo Ngay</button>
+            
+            <input type="hidden" id="editStoryId">
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeCreateModal()">Hủy</button>
+                <button id="btnSaveStory" class="btn-confirm-modal" onclick="handleFormSubmit()">Lưu Lại</button>
             </div>
         </div>
     </div>
 
-<script type="module">
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -328,6 +437,7 @@
         const db = getFirestore(app);
 
         let currentUserId = null;
+        let storiesCache = {}; 
 
         // HIỂN THỊ NGÀY THÁNG
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -345,10 +455,9 @@
             }
         });
 
-        // TẢI DANH SÁCH TRUYỆN VÀ TÍNH THỐNG KÊ (ĐÃ FIX)
+        // TẢI DANH SÁCH TRUYỆN
         async function loadMyStories() {
             const list = document.getElementById('storiesList');
-            // Reset các biến đếm về 0 trước khi tính toán
             let totalStories = 0;
             let totalViews = 0;
             let totalChapters = 0;
@@ -364,7 +473,7 @@
                         <div class="empty-state">
                             <i class="fas fa-feather-alt empty-icon"></i>
                             <h3>Chưa có tác phẩm nào</h3>
-                            <p>Hãy bắt đầu hành trình sáng tác của bạn.</p>
+                            <p>Hãy bắt đầu hành trình sáng tác của bạn ngay hôm nay.</p>
                         </div>`;
                 } else {
                     list.innerHTML = '';
@@ -372,42 +481,47 @@
                         const data = docSnap.data();
                         const id = docSnap.id;
                         
-                        // --- LOGIC THỐNG KÊ (FIXED) ---
-                        // Dùng Number() để đảm bảo cộng số học, tránh lỗi cộng chuỗi
+                        storiesCache[id] = data;
+
                         totalStories++;
                         totalViews += Number(data.views || 0);
                         totalChapters += Number(data.chapterCount || 0); 
 
-                        // Render Card (Giữ nguyên giao diện)
                         const isPublished = data.status === 'Published';
                         const statusClass = isPublished ? 'status-published' : 'status-draft';
-                        const statusText = isPublished ? 'Đã hoàn thiện' : 'Đang hoàn thiện';
+                        const statusText = isPublished ? 'Đã hoàn thành' : 'Bản thảo';
                         
                         const publishBtn = isPublished 
-                            ? `<button class="btn-icon-text btn-unpublish" onclick="toggleStatus('${id}', 'Draft')"><i class="fas fa-eye-slash"></i> Gỡ</button>`
-                            : `<button class="btn-icon-text btn-publish" onclick="toggleStatus('${id}', 'Published')"><i class="fas fa-upload"></i> Đăng</button>`;
+                            ? `<button class="btn-icon-text btn-unpublish" onclick="toggleStatus('${id}', 'Draft')"><i class="fas fa-eye-slash"></i> Ẩn</button>`
+                            : `<button class="btn-icon-text btn-publish" onclick="toggleStatus('${id}', 'Published')"><i class="fas fa-globe"></i> Đăng</button>`;
 
                         list.innerHTML += `
                             <div class="story-card">
-                                <img src="${data.cover}" class="card-poster" onerror="this.src='https://via.placeholder.com/150x225/222/555?text=WibuPad'">
+                                <img src="${data.cover}" class="card-poster" onerror="this.src='https://via.placeholder.com/150x225/222/555?text=Cover'">
                                 <div class="card-body">
-                                    <div class="card-header">
-                                        <div>
+                                    <div>
+                                        <div class="badge-group">
                                             <span class="card-status ${statusClass}">${statusText}</span>
                                             <span class="card-cat">${data.category || 'Khác'}</span>
                                         </div>
                                         <div class="card-title" title="${data.title}">${data.title}</div>
+                                        <div class="card-stats">
+                                            <div class="stat-item"><i class="fas fa-layer-group"></i> ${data.chapterCount || 0} chương</div>
+                                            <div class="stat-item"><i class="fas fa-eye"></i> ${Number(data.views || 0).toLocaleString()}</div>
+                                        </div>
                                     </div>
-                                    <div class="card-stats">
-                                        <div class="stat-item"><i class="fas fa-layer-group"></i> ${data.chapterCount || 0}</div>
-                                        <div class="stat-item"><i class="fas fa-eye"></i> ${Number(data.views || 0).toLocaleString()}</div>
-                                        <div class="stat-item"><i class="far fa-clock"></i> ${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('vi-VN') : 'Mới'}</div>
-                                    </div>
+                                    
                                     <div class="card-actions">
                                         <button class="btn-icon-text btn-write" onclick="window.location.href='write.html?id=${id}'">
                                             <i class="fas fa-pen-nib"></i> Viết
                                         </button>
+                                        
+                                        <button class="btn-icon-text btn-edit" onclick="openEditModal('${id}')">
+                                            <i class="fas fa-cog"></i> Sửa
+                                        </button>
+
                                         ${publishBtn}
+                                        
                                         <button class="btn-icon-text btn-delete" onclick="deleteStory('${id}')">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
@@ -417,44 +531,75 @@
                     });
                 }
                 
-                // --- CẬP NHẬT GIAO DIỆN THỐNG KÊ ---
-                // Sử dụng animation số nhảy hoặc gán trực tiếp
                 animateValue("statTotal", 0, totalStories, 1000);
                 animateValue("statViews", 0, totalViews, 1000);
                 animateValue("statChapters", 0, totalChapters, 1000);
 
             } catch (e) { 
                 console.error("Lỗi tải dữ liệu:", e);
-                // showToast("Lỗi tải dữ liệu", "error"); // Tùy chọn
             }
         }
 
-        // Hàm hiệu ứng số chạy (Thêm vào cuối script để nhìn cho chuyên nghiệp)
         function animateValue(id, start, end, duration) {
             const obj = document.getElementById(id);
             if(!obj) return;
-            // Nếu số quá lớn thì không chạy hiệu ứng để tránh lag, gán luôn
             if (end === 0) { obj.innerText = "0"; return; }
-            
             let startTimestamp = null;
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 const value = Math.floor(progress * (end - start) + start);
-                obj.innerText = value.toLocaleString(); // Thêm dấu phẩy phân cách hàng nghìn
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
+                obj.innerText = value.toLocaleString();
+                if (progress < 1) window.requestAnimationFrame(step);
             };
             window.requestAnimationFrame(step);
         }
 
-        // TẠO TRUYỆN MỚI
-        window.openCreateModal = () => document.getElementById('createModal').classList.add('active');
+        // --- CÁC HÀM LIÊN QUAN ĐẾN MODAL (TẠO & SỬA) ---
+
+        window.openCreateModal = () => {
+            document.getElementById('editStoryId').value = ''; 
+            document.getElementById('storyTitle').value = '';
+            document.getElementById('storyDesc').value = '';
+            document.getElementById('storyCover').value = '';
+            document.getElementById('storyCategory').selectedIndex = 0;
+            
+            document.getElementById('btnSaveStory').innerText = "Tạo Tác Phẩm";
+            document.querySelector('.modal-title').innerText = "Tác phẩm mới";
+            
+            document.getElementById('createModal').classList.add('active');
+        };
+
+        window.openEditModal = (id) => {
+            const data = storiesCache[id];
+            if(!data) return;
+
+            document.getElementById('editStoryId').value = id;
+            document.getElementById('storyTitle').value = data.title;
+            document.getElementById('storyDesc').value = data.desc;
+            document.getElementById('storyCover').value = data.cover;
+            document.getElementById('storyCategory').value = data.category;
+
+            document.getElementById('btnSaveStory').innerText = "Lưu Thay Đổi";
+            document.querySelector('.modal-title').innerText = "Chỉnh sửa thông tin";
+
+            document.getElementById('createModal').classList.add('active');
+        };
+
         window.closeCreateModal = () => document.getElementById('createModal').classList.remove('active');
 
-        window.handleSaveStory = async () => {
-            const btn = event.currentTarget;
+        window.handleFormSubmit = async () => {
+            const editId = document.getElementById('editStoryId').value;
+            
+            if (editId) {
+                await updateStory(editId); 
+            } else {
+                await createNewStory();
+            }
+        }
+
+        async function createNewStory() {
+            const btn = document.getElementById('btnSaveStory');
             const title = document.getElementById('storyTitle').value.trim();
             const desc = document.getElementById('storyDesc').value.trim();
             const cover = document.getElementById('storyCover').value.trim();
@@ -462,14 +607,14 @@
 
             if(!title || !category) { showToast("Vui lòng điền đủ Tên và Thể loại!", "error"); return; }
 
-            btn.innerText = "Đang xử lý...";
+            btn.innerText = "Đang tạo...";
             btn.disabled = true;
 
             try {
                 const docRef = await addDoc(collection(db, "stories"), {
                     title: title, 
                     desc: desc,
-                    cover: cover || "https://via.placeholder.com/400x600/222/555?text=WibuPad",
+                    cover: cover || "https://via.placeholder.com/400x600/222/555?text=Cover",
                     category: category,
                     authorId: currentUserId, 
                     authorName: auth.currentUser.displayName,
@@ -481,36 +626,58 @@
                 
                 showToast("Tạo truyện thành công!");
                 window.location.href = `write.html?id=${docRef.id}`;
-
             } catch (e) { 
                 showToast("Lỗi: " + e.message, "error");
-                btn.innerText = "Tạo Ngay";
+                btn.innerText = "Tạo Tác Phẩm";
                 btn.disabled = false;
             }
-        };
+        }
 
-        // ĐỔI TRẠNG THÁI ĐĂNG TẢI
+        async function updateStory(id) {
+            const btn = document.getElementById('btnSaveStory');
+            const title = document.getElementById('storyTitle').value.trim();
+            const desc = document.getElementById('storyDesc').value.trim();
+            const cover = document.getElementById('storyCover').value.trim();
+            const category = document.getElementById('storyCategory').value;
+
+            if(!title || !category) { showToast("Vui lòng điền đủ thông tin!", "error"); return; }
+
+            btn.innerText = "Đang lưu...";
+            btn.disabled = true;
+
+            try {
+                const storyRef = doc(db, "stories", id);
+                await updateDoc(storyRef, {
+                    title: title,
+                    desc: desc,
+                    cover: cover,
+                    category: category
+                });
+
+                showToast("Đã cập nhật thông tin!");
+                closeCreateModal();
+                loadMyStories();
+                btn.disabled = false;
+            } catch (e) {
+                console.error(e);
+                showToast("Lỗi cập nhật: " + e.message, "error");
+                btn.innerText = "Lưu Thay Đổi";
+                btn.disabled = false;
+            }
+        }
+
         window.toggleStatus = async (id, newStatus) => {
             try {
                 const storyRef = doc(db, "stories", id);
-                await updateDoc(storyRef, { 
-                    status: newStatus 
-                });
-                
-                const msg = newStatus === 'Published' ? "Đã công khai truyện lên trang chủ!" : "Đã gỡ truyện về bản thảo.";
+                await updateDoc(storyRef, { status: newStatus });
+                const msg = newStatus === 'Published' ? "Đã công khai truyện!" : "Đã gỡ truyện về bản thảo.";
                 showToast(msg, "success");
-                
-                // Tải lại danh sách để cập nhật giao diện ngay lập tức
                 loadMyStories(); 
-            } catch (e) { 
-                console.error(e);
-                showToast("Lỗi cập nhật trạng thái.", "error"); 
-            }
+            } catch (e) { showToast("Lỗi cập nhật trạng thái.", "error"); }
         };
 
-        // XÓA TRUYỆN
         window.deleteStory = async (id) => {
-            if(confirm("Xóa vĩnh viễn truyện này? Tất cả chương và lượt đọc sẽ mất hết.")) {
+            if(confirm("Xóa vĩnh viễn truyện này? Tất cả dữ liệu sẽ mất hết.")) {
                 try {
                     await deleteDoc(doc(db, "stories", id));
                     showToast("Đã xóa tác phẩm.");
@@ -519,25 +686,20 @@
             }
         };
 
-        // THÔNG BÁO TOAST
         window.showToast = (msg, type='success') => {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = 'toast';
-            toast.style.borderLeftColor = type === 'error' ? '#ff4757' : '#2ecc71';
-            toast.innerHTML = `<i class="fas ${type==='error'?'fa-exclamation-circle':'fa-check-circle'}" style="color:${type==='error'?'#ff4757':'#2ecc71'}"></i> ${msg}`;
+            toast.style.borderLeftColor = type === 'error' ? '#fb7185' : '#34d399';
+            const icon = type === 'error' ? '<i class="fas fa-exclamation-circle" style="color:#fb7185"></i>' : '<i class="fas fa-check-circle" style="color:#34d399"></i>';
+            toast.innerHTML = `${icon} ${msg}`;
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // ĐĂNG XUẤT
         window.tryLogout = () => {
             if(confirm("Bạn có chắc chắn muốn đăng xuất không?")) {
-                signOut(auth).then(() => {
-                    window.location.href = 'index.html';
-                }).catch((error) => {
-                    showToast("Lỗi khi đăng xuất", "error");
-                });
+                signOut(auth).then(() => window.location.href = 'index.html').catch((e) => showToast("Lỗi đăng xuất", "error"));
             }
         }
     </script>

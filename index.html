@@ -548,56 +548,31 @@
         </div>
     </footer>
 
-    <script type="module">
+<script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, limit, getDocs, where, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, where, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // Config Firebase
         const firebaseConfig = { apiKey: "AIzaSyAT6SnKojUmsisDhnuEtsL3H59NwrhZxDc", authDomain: "hopphim-29e1c.firebaseapp.com", projectId: "hopphim-29e1c", storageBucket: "hopphim-29e1c.firebasestorage.app", messagingSenderId: "1076044580405", appId: "1:1076044580405:web:a3485f8533604f305e537c", measurementId: "G-6RT4CX2NR0" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        window.addToLibrary = async (id, title, cover) => {
-            const user = auth.currentUser;
-            if (!user) {
-                showConfirm('Yêu cầu đăng nhập', 'Bạn cần tài khoản để lưu truyện.', 'fa-lock', () => { window.location.href = '/login.html'; });
-                return;
-            }
-
-            // Dữ liệu tối giản để lưu vào mảng history của User
-            const storyData = {
-                id: id,
-                title: title,
-                cover: cover,
-                lastChapter: 1, // Mặc định bắt đầu từ 1
-                totalChapter: 0, 
-                addedAt: new Date().toISOString()
-            };
-
-            try {
-                const userRef = doc(db, "users", user.uid);
-                await updateDoc(userRef, {
-                    history: arrayUnion(storyData)
-                });
-                showToast("Đã thêm vào tủ sách!");
-            } catch (e) {
-                console.error("Lỗi thêm truyện:", e);
-                showToast("Lỗi khi thêm truyện", "error");
-            }
-        };
-
-        // LƯU Ý: Trong hàm render card (createCard) của index.html, hãy sửa nút dấu cộng thành:
-        // <button class="btn-overlay btn-add-ovl" onclick="event.stopPropagation(); addToLibrary('${d.id}', '${d.title.replace(/'/g, "\\'")}', '${d.cover}')">
-
-        // --- AUTH LOGIC ---
+        // --- AUTH LOGIC (ĐÃ THÊM RELOAD ĐỂ CẬP NHẬT AVATAR MỚI) ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                window.currentUser = user;
+                // 🔥 FIX: Ép tải lại thông tin mới nhất từ server (nếu vừa đổi bên Profile)
+                await user.reload();
+                const currentUser = auth.currentUser; // Lấy lại user sau khi reload
+                
+                window.currentUser = currentUser;
                 document.getElementById('btnLogin').style.display = 'none';
                 document.getElementById('userContainer').style.display = 'block';
-                document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}&background=FF5E62&color=fff`;
-                document.getElementById('dropdownName').innerText = user.displayName;
+                
+                // Cập nhật giao diện
+                document.getElementById('userAvatar').src = currentUser.photoURL || `https://ui-avatars.com/api/?name=${currentUser.displayName}&background=FF5E62&color=fff`;
+                document.getElementById('dropdownName').innerText = currentUser.displayName || "Thành viên";
             } else {
                 window.currentUser = null;
                 document.getElementById('btnLogin').style.display = 'block';
@@ -605,12 +580,64 @@
             }
         });
 
+        // --- TÍNH NĂNG: THÊM VÀO TỦ SÁCH (CHỐNG TRÙNG LẶP) ---
+        window.addToLibrary = async (id, title, cover) => {
+            const user = auth.currentUser;
+            if (!user) {
+                showConfirm('Yêu cầu đăng nhập', 'Bạn cần tài khoản để lưu truyện.', 'fa-lock', () => { window.location.href = '/login.html'; });
+                return;
+            }
+
+            try {
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+                
+                let currentHistory = [];
+                if (userSnap.exists()) {
+                    currentHistory = userSnap.data().history || [];
+                }
+
+                // Kiểm tra xem truyện đã có trong list chưa
+                const exists = currentHistory.some(item => item.id === id);
+                if (exists) {
+                    showToast("Truyện này đã có trong tủ sách rồi!", "error"); // Báo lỗi nếu trùng
+                    return;
+                }
+
+                // Nếu chưa có, thêm mới vào đầu mảng
+                const newStory = {
+                    id: id,
+                    title: title,
+                    cover: cover,
+                    lastChapter: 1,
+                    totalChapter: 0, 
+                    addedAt: new Date().toISOString()
+                };
+
+                // Dùng Spread Operator để thêm vào đầu danh sách
+                const newHistory = [newStory, ...currentHistory];
+
+                // Cập nhật lại Firestore (Dùng update hoặc set nếu chưa có doc)
+                if (userSnap.exists()) {
+                    await updateDoc(userRef, { history: newHistory });
+                } else {
+                    await setDoc(userRef, { history: newHistory });
+                }
+
+                showToast("Đã thêm vào tủ sách!");
+
+            } catch (e) {
+                console.error("Lỗi thêm truyện:", e);
+                showToast("Lỗi khi thêm truyện", "error");
+            }
+        };
+
         // --- FETCH DATA LOGIC ---
         async function loadAllSections() {
-            // 1. Tải truyện mới nhất (Tất cả)
-            fetchGenre('grid-new', query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(12)));
+            // 1. Tải truyện mới nhất (Tất cả) - Sửa limit lên 18 cho đẹp grid
+            fetchGenre('grid-new', query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(18)));
 
-            // 2. Tải theo từng danh mục cụ thể (Khớp với Dashboard)
+            // 2. Tải theo từng danh mục
             fetchGenre('grid-tien-hiep', query(collection(db, "stories"), where("category", "==", "Tiên Hiệp"), limit(6)));
             fetchGenre('grid-ngon-tinh', query(collection(db, "stories"), where("category", "==", "Ngôn Tình"), limit(6)));
             fetchGenre('grid-linh-di', query(collection(db, "stories"), where("category", "==", "Linh Dị"), limit(6)));
@@ -625,144 +652,98 @@
                 const snapshot = await getDocs(q);
                 if (!snapshot.empty) {
                     container.innerHTML = '';
-                    snapshot.forEach(doc => {
-                        const d = doc.data();
+                    snapshot.forEach(docSnap => {
+                        const d = docSnap.data();
+                        
+                        // Xử lý an toàn dữ liệu (tránh undefined)
+                        const safeTitle = d.title ? d.title.replace(/'/g, "\\'") : "Chưa đặt tên";
+                        const safeCover = d.cover || "https://via.placeholder.com/200x300/222/555?text=WibuPad";
+                        const safeAuthor = d.authorName || 'Tác giả ẩn danh';
+                        const safeStatus = d.status === 'Published' ? 'Đã hoàn thiện' : 'Đang ra';
+
                         container.innerHTML += `
-                        <div class="book-card" onclick="window.location.href='/doc-truyen.html?id=${doc.id}'">
+                        <div class="book-card" onclick="window.location.href='/doc-truyen.html?id=${docSnap.id}'">
                             <div class="book-cover">
-                                <div class="badge-status">${d.status === 'Published' ? 'Đã hoàn thiện' : 'Đang hoàn thiện'}</div>
-                                <img src="${d.cover}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/222/555?text=WibuPad'">
+                                <div class="badge-status">${safeStatus}</div>
+                                <img src="${safeCover}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/222/555?text=WibuPad'">
                                 
                                 <div class="card-overlay">
                                     <button class="btn-overlay btn-play-ovl" title="Đọc ngay"><i class="fas fa-play"></i></button>
                                     <button class="btn-overlay btn-add-ovl" title="Lưu yêu thích" 
-                                        onclick="event.stopPropagation(); addToLibrary('${doc.id}', '${d.title.replace(/'/g, "\\'")}', '${d.cover}')">
+                                        onclick="event.stopPropagation(); addToLibrary('${docSnap.id}', '${safeTitle}', '${safeCover}')">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="book-meta">
                                 <div class="book-title" title="${d.title}">${d.title}</div>
-                                <div class="book-author">${d.authorName || 'Tác giả ẩn danh'}</div>
+                                <div class="book-author">${safeAuthor}</div>
                             </div>
                         </div>`;
                     });
                 } else {
-                    container.innerHTML = '<div style="color:#333; font-size:0.85rem; padding-left:10px;">Chưa có truyện ở mục này.</div>';
+                    container.innerHTML = '<div style="color:#666; font-size:0.9rem; padding: 20px; grid-column: 1/-1; text-align: center;">Chưa có truyện nào ở mục này.</div>';
                 }
             } catch (e) { console.error("Lỗi tải mục " + elementId, e); }
         }
 
         // --- UTILS ---
-        window.showToast = (msg) => {
+        window.showToast = (msg, type='success') => {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = 'toast';
-            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${msg}</span>`;
+            // Đổi màu nếu là lỗi
+            if(type === 'error') toast.style.borderLeftColor = '#ff4757';
+            toast.innerHTML = `<i class="fas ${type==='error'?'fa-exclamation-circle':'fa-check-circle'}" style="color:${type==='error'?'#ff4757':'#2ecc71'}"></i> <span>${msg}</span>`;
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
 
         window.handleWriteRedirect = () => {
-            if(!window.currentUser) { window.location.href = '/login.html'; } 
-            else { window.location.href = 'dashboard.html'; }
-        }
-
-        window.tryLogout = () => { signOut(auth).then(() => window.location.reload()); }
-        window.toggleDropdown = () => document.getElementById('dropdownMenu').classList.toggle('active');
-        window.onclick = (e) => { if (!e.target.matches('.user-avatar')) { const dd = document.getElementById('dropdownMenu'); if (dd?.classList.contains('active')) dd.classList.remove('active'); } }
-
-        // Chạy khởi tạo
-        window.addEventListener('load', loadAllSections);
-
-        // --- FETCH DATA (LOGIC THẬT) ---
-        async function loadStories() {
-            const container = document.getElementById('newBooks');
-            try {
-                // Query: Lấy 18 truyện mới nhất không phân biệt thể loại
-                const q = query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(18));
-                const snapshot = await getDocs(q);
-
-                if (!snapshot.empty) {
-                    container.innerHTML = ''; 
-                    snapshot.forEach(doc => {
-                        const d = doc.data();
-                        container.innerHTML += `
-                            <div class="book-card" onclick="window.location.href='/doc-truyen.html?id=${doc.id}'">
-                                <div class="book-cover">
-                                    <div class="badge-status">${d.status === 'Published' ? 'Đã hoàn thiện' : 'Đang hoàn thiện'}</div>
-                                    <img src="${d.cover}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/222/555?text=WibuPad'">
-                                    <div class="card-overlay">
-                                        <button class="btn-overlay btn-play-ovl" title="Đọc ngay"><i class="fas fa-play"></i></button>
-                                        <button class="btn-overlay btn-add-ovl" title="Lưu yêu thích" onclick="event.stopPropagation(); showToast('Đã lưu vào tủ sách!')">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="book-meta">
-                                    <div class="book-title" title="${d.title}">${d.title}</div>
-                                    <div class="book-author">${d.authorName || 'Tác giả ẩn danh'}</div>
-                                </div>
-                            </div>`;
-                    });
-                } else {
-                    container.innerHTML = '<div class="empty-placeholder">Hiện chưa có truyện nào được đăng tải.</div>';
-                }
-            } catch (e) {
-                console.error("Lỗi tải truyện:", e);
-                container.innerHTML = '<div class="empty-placeholder">Không thể tải dữ liệu. Vui lòng kiểm tra lại.</div>';
+            if(!window.currentUser) { 
+                showConfirm('Yêu cầu đăng nhập', 'Bạn cần tài khoản để sử dụng Studio sáng tác.', 'fa-lock', () => { window.location.href = '/login.html'; });
+            } else { 
+                window.location.href = 'dashboard.html'; 
             }
         }
 
-        // Khởi chạy
-        window.addEventListener('load', loadStories);
-
-        // --- RENDER CARD ---
-        const createCard = (d) => `
-            <div class="book-card" onclick="window.location.href='/doc-truyen.html?id=${d.id}'">
-                <button class="btn-overlay btn-add-ovl" onclick="event.stopPropagation(); addToLibrary('${d.id}', '${d.title.replace(/'/g, "\\'")}', '${d.cover}')">
-                <div class="book-cover">
-                    <div class="badge-status">${d.status || 'Ongoing'}</div>
-                    <img src="${d.cover}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/222/555?text=WibuPad'">
-                </div>
-                <div class="book-meta">
-                    <div class="book-title">${d.title}</div>
-                    <div class="book-author">${d.authorName || 'Vô danh'}</div>
-                </div>
-            </div>`;
-
-        // --- UTILS ---
-        window.handleWriteRedirect = () => {
-            if(!window.currentUser) {
-                showConfirm('Yêu cầu đăng nhập', 'Bạn cần tài khoản để sử dụng Studio sáng tác.', 'fa-lock', () => { window.location.href = '/login.html'; });
-            } else { window.location.href = 'dashboard.html'; }
-        }
-
-        window.tryLogout = () => {
+        window.tryLogout = () => { 
             showConfirm('Đăng xuất', 'Bạn có chắc chắn muốn đăng xuất?', 'fa-sign-out-alt', async () => {
                 await signOut(auth);
                 window.location.reload();
             });
         }
 
+        // Popup xác nhận
         const modal = document.getElementById('customModal');
         const confirmBtn = document.getElementById('modalConfirmBtn');
+        
         window.showConfirm = (title, desc, iconClass, callback) => {
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalDesc').innerText = desc;
             document.getElementById('modalIcon').className = `fas ${iconClass}`;
+            
+            // Clone nút để xóa event listener cũ
             const newBtn = confirmBtn.cloneNode(true);
             confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+            
             newBtn.onclick = () => { callback(); closeCustomModal(); };
             modal.classList.add('active');
         }
+        
         window.closeCustomModal = () => modal.classList.remove('active');
         window.toggleDropdown = () => document.getElementById('dropdownMenu').classList.toggle('active');
         
-        window.onclick = (e) => { if (!e.target.matches('.user-avatar')) { const dd = document.getElementById('dropdownMenu'); if (dd?.classList.contains('active')) dd.classList.remove('active'); } }
+        // Đóng dropdown khi click ra ngoài
+        window.onclick = (e) => { 
+            if (!e.target.matches('.user-avatar')) { 
+                const dd = document.getElementById('dropdownMenu'); 
+                if (dd?.classList.contains('active')) dd.classList.remove('active'); 
+            } 
+        }
 
-        // Init
-        window.addEventListener('load', loadStories);
+        // Chạy khởi tạo
+        window.addEventListener('load', loadAllSections);
     </script>
 </body>
 </html>

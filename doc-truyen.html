@@ -195,10 +195,10 @@
         </aside>
     </main>
 
-    <script type="module">
+<script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, orderBy, getDocs, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, orderBy, getDocs, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Config Firebase
         const firebaseConfig = { apiKey: "AIzaSyAT6SnKojUmsisDhnuEtsL3H59NwrhZxDc", authDomain: "hopphim-29e1c.firebaseapp.com", projectId: "hopphim-29e1c", storageBucket: "hopphim-29e1c.firebasestorage.app", messagingSenderId: "1076044580405", appId: "1:1076044580405:web:a3485f8533604f305e537c", measurementId: "G-6RT4CX2NR0" };
@@ -211,47 +211,87 @@
         let firstChapterId = null;
         let storyDataGlobal = null;
 
-        // KIỂM TRA ĐĂNG NHẬP CHO AVATAR HEADER
-        onAuthStateChanged(auth, (user) => {
+        // --- 1. AUTH CHECK ---
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
-                window.currentUser = user;
-                document.getElementById('headerAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}&background=FF5E62&color=fff`;
+                // Fix Cache: Ép tải lại thông tin mới nhất
+                await user.reload(); 
+                window.currentUser = auth.currentUser;
+
+                document.getElementById('headerAvatar').src = window.currentUser.photoURL || `https://ui-avatars.com/api/?name=${window.currentUser.displayName}&background=FF5E62&color=fff`;
+                
+                checkLibraryStatus(window.currentUser.uid);
             }
         });
 
-        // LOAD THÔNG TIN TRUYỆN
+        // --- 2. HÀM CHECK TỦ SÁCH ---
+        async function checkLibraryStatus(uid) {
+            if (!storyId) return;
+            try {
+                const userDoc = await getDoc(doc(db, "users", uid));
+                if (userDoc.exists()) {
+                    const history = userDoc.data().history || [];
+                    if (history.some(item => item.id === storyId)) {
+                        updateBtnStatus();
+                    }
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function updateBtnStatus() {
+            const btn = document.getElementById('btnAddLib');
+            if(btn) {
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                btn.style.background = '#2ecc71';
+                btn.style.borderColor = '#2ecc71';
+                btn.title = "Đã có trong tủ sách";
+                btn.onclick = () => alert("Truyện này đã có trong tủ sách của bạn!");
+            }
+        }
+
+        // --- 3. LOAD DỮ LIỆU (QUAN TRỌNG: ĐÃ FIX LOADING) ---
         async function loadStoryDetail() {
             if (!storyId) { window.location.href = 'index.html'; return; }
 
             try {
+                // Lấy thông tin truyện
                 const storyDoc = await getDoc(doc(db, "stories", storyId));
+                
                 if (storyDoc.exists()) {
                     const data = storyDoc.data();
                     storyDataGlobal = data;
                     
+                    // Render thông tin cơ bản
                     document.title = `${data.title} - WibuPad`;
                     document.getElementById('storyTitle').innerText = data.title;
                     document.getElementById('storyDesc').innerText = data.desc || "Chưa có mô tả.";
                     document.getElementById('storyCover').src = data.cover;
                     document.getElementById('heroBg').style.backgroundImage = `url('${data.cover}')`;
                     
-                    // FIXED: Gán giá trị vào thẻ span để tránh lỗi NaN khi parseInt
                     document.getElementById('valReads').innerText = formatNumber(data.views);
-                    document.getElementById('valVotes').innerText = formatNumber(data.votes);
+                    document.getElementById('valVotes').innerText = formatNumber(data.votes || 0);
                     document.getElementById('valChapters').innerText = data.chapterCount || 0;
 
-                    // FIXED: Hiển thị tên tác giả ngay lập tức
                     document.getElementById('storyAuthor').innerText = data.authorName || "Tác giả ẩn danh";
+                    
+                    // Lấy avatar tác giả (chạy ngầm, không chặn luồng)
                     fetchAuthorAvatar(data.authorId);
 
-                    await loadChapters();
+                    // Tải danh sách chương
+                    await loadChapters(); 
+
                 } else {
                     window.location.href = 'index.html';
                 }
-            } catch (e) { console.error("Lỗi:", e); }
+            } catch (e) { 
+                console.error("Lỗi tải trang:", e);
+                document.getElementById('chapterList').innerHTML = '<p style="color:red; padding:20px;">Lỗi tải dữ liệu. Vui lòng thử lại.</p>';
+            } finally {
+                // 🔥 QUAN TRỌNG: Tắt loading dù thành công hay thất bại
+                document.getElementById('loading').style.display = 'none';
+            }
         }
 
-        // LẤY AVATAR TÁC GIẢ
         async function fetchAuthorAvatar(uid) {
             if(!uid) return;
             try {
@@ -262,76 +302,102 @@
             } catch (e) {}
         }
 
-        // LOAD DANH SÁCH CHƯƠNG
         async function loadChapters() {
-        const container = document.getElementById('chapterList');
-        const q = query(collection(db, "stories", storyId, "chapters"), orderBy("createdAt", "asc"));
-        try {
-            const snapshot = await getDocs(q);
-            container.innerHTML = '';
+            const container = document.getElementById('chapterList');
+            const q = query(collection(db, "stories", storyId, "chapters"), orderBy("createdAt", "asc"));
             
-            if (snapshot.empty) {
-                container.innerHTML = '<p style="color:#555; padding: 20px;">Truyện chưa có chương nào được đăng tải.</p>';
-                document.getElementById('loading').style.display = 'none';
-                return;
+            try {
+                const snapshot = await getDocs(q);
+                
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="color:#555; padding: 20px;">Truyện chưa có chương nào được đăng tải.</p>';
+                    return;
+                }
+
+                let html = '';
+                snapshot.forEach((docSnap) => {
+                    const chap = docSnap.data();
+                    const id = docSnap.id;
+                    
+                    if (!firstChapterId) firstChapterId = id;
+
+                    const date = chap.createdAt ? new Date(chap.createdAt.seconds * 1000).toLocaleDateString('vi-VN') : "Mới";
+                    
+                    html += `
+                        <div class="chapter-item" onclick="window.location.href='doc.html?storyId=${storyId}&chapId=${id}'">
+                            <span class="chapter-name">${chap.title}</span>
+                            <span class="chapter-date">${date}</span>
+                        </div>`;
+                });
+                
+                container.innerHTML = html;
+            } catch (e) { 
+                console.error("Lỗi load chương:", e);
+                container.innerHTML = '<p style="color:#555; padding: 20px;">Không thể tải danh sách chương.</p>';
             }
-
-            snapshot.forEach((docSnap) => {
-                const chap = docSnap.data();
-                const id = docSnap.id;
-                
-                // Gán ID chương đầu tiên để nút "Bắt đầu đọc" hoạt động
-                if (!firstChapterId) firstChapterId = id;
-
-                const date = chap.createdAt ? new Date(chap.createdAt.seconds * 1000).toLocaleDateString('vi-VN') : "Mới";
-                
-                // 🔥 Hiển thị trực tiếp chap.title thay vì dùng biến đếm để tránh lỗi NaN
-                container.innerHTML += `
-                    <div class="chapter-item" onclick="window.location.href='doc.html?storyId=${storyId}&chapId=${id}'">
-                        <span class="chapter-name">${chap.title}</span>
-                        <span class="chapter-date">${date}</span>
-                    </div>`;
-            });
-            
-            document.getElementById('loading').style.display = 'none';
-        } catch (e) { 
-            console.error("Lỗi load chương:", e); 
         }
-    }
 
-        // HÀM BẮT ĐẦU ĐỌC
+        // --- 4. CÁC SỰ KIỆN NÚT BẤM ---
         document.getElementById('btnReadNow').onclick = () => {
             if(firstChapterId) {
                 window.location.href = `doc.html?storyId=${storyId}&chapId=${firstChapterId}`;
             } else {
-                alert("Truyện hiện chưa có chương nào để đọc. Vui lòng quay lại sau!");
+                alert("Truyện hiện chưa có chương nào để đọc.");
             }
         };
 
-        // HÀM THÊM VÀO TỦ SÁCH
         document.getElementById('btnAddLib').onclick = async () => {
             if (!window.currentUser) {
                 alert("Vui lòng đăng nhập!");
                 window.location.href = 'login.html';
                 return;
             }
+
+            const btn = document.getElementById('btnAddLib');
+            const originalContent = btn.innerHTML; // Lưu trạng thái cũ
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; // Loading
+
             try {
                 const userRef = doc(db, "users", window.currentUser.uid);
-                await updateDoc(userRef, {
-                    history: arrayUnion({
-                        id: storyId,
-                        title: storyDataGlobal.title,
-                        cover: storyDataGlobal.cover,
-                        lastChapter: 1,
-                        totalChapter: storyDataGlobal.chapterCount || 0,
-                        updatedAt: new Date().toISOString()
-                    })
-                });
-                const btn = document.getElementById('btnAddLib');
-                btn.innerHTML = '<i class="fas fa-check"></i>';
-                btn.style.background = '#2ecc71';
+                const userSnap = await getDoc(userRef);
+                
+                let currentHistory = [];
+                if (userSnap.exists()) {
+                    currentHistory = userSnap.data().history || [];
+                }
+
+                // Check trùng lặp
+                if (currentHistory.some(item => item.id === storyId)) {
+                    alert("Truyện này đã có trong tủ sách rồi!");
+                    updateBtnStatus();
+                    return;
+                }
+
+                const newStory = {
+                    id: storyId,
+                    title: storyDataGlobal.title,
+                    cover: storyDataGlobal.cover,
+                    lastChapter: 1,
+                    totalChapter: storyDataGlobal.chapterCount || 0,
+                    addedAt: new Date().toISOString()
+                };
+
+                const newHistory = [newStory, ...currentHistory];
+
+                if (userSnap.exists()) {
+                    await updateDoc(userRef, { history: newHistory });
+                } else {
+                    await setDoc(userRef, { history: newHistory });
+                }
+
+                updateBtnStatus();
                 alert("Đã lưu vào tủ sách!");
-            } catch (e) { console.error(e); }
+
+            } catch (e) { 
+                console.error(e);
+                btn.innerHTML = originalContent; // Trả về như cũ nếu lỗi
+                alert("Lỗi khi lưu truyện.");
+            }
         }
 
         function formatNumber(num) {
@@ -340,7 +406,6 @@
             return n >= 1000 ? (n / 1000).toFixed(1) + 'K' : n;
         }
 
-        // Chạy khi load trang
         window.addEventListener('load', loadStoryDetail);
     </script>
 </body>

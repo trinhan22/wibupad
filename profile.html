@@ -286,12 +286,14 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let currentUserData = null; // Biến lưu toàn bộ dữ liệu User (bao gồm history)
+        let currentUserData = null;
 
         // --- AUTH CHECK ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Sử dụng tên "Bạn đọc" nếu không có tên
+                // Ép reload dữ liệu user từ server để tránh cache cũ
+                await user.reload(); 
+                
                 const displayName = user.displayName || "Bạn đọc";
                 document.getElementById('sidebarName').innerText = displayName;
                 
@@ -308,7 +310,62 @@
             }
         });
 
-        // --- LOAD TỦ SÁCH THỰC TẾ ---
+        // --- HÀM CẬP NHẬT PROFILE (ĐÃ SỬA LOGIC) ---
+        window.updateUserProfile = async (e) => {
+            e.preventDefault();
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const newName = document.getElementById('inpName').value.trim();
+            const newPhoto = document.getElementById('inpAvatar').value.trim();
+            const btn = document.querySelector('.btn-save');
+
+            if (!newName) {
+                showToast("Tên không được để trống!", "error");
+                return;
+            }
+
+            btn.innerText = "Đang lưu...";
+            btn.disabled = true;
+
+            try {
+                // 1. Cập nhật Firebase Auth (Chứng minh thư)
+                await updateProfile(user, {
+                    displayName: newName,
+                    photoURL: newPhoto
+                });
+
+                // 2. Cập nhật Firestore (Hồ sơ database - để các trang khác đọc được)
+                const userRef = doc(db, "users", user.uid);
+                await updateDoc(userRef, {
+                    displayName: newName,
+                    photoURL: newPhoto
+                });
+
+                // 3. Ép browser lấy token mới ngay lập tức
+                await user.reload();
+
+                showToast("Cập nhật thành công!");
+
+                // Cập nhật giao diện ngay lập tức
+                document.getElementById('sidebarName').innerText = newName;
+                document.getElementById('sidebarAvatar').src = newPhoto || `https://ui-avatars.com/api/?name=${newName}&background=FF5E62&color=fff`;
+
+                // 4. Reload trang sau 1s để đảm bảo đồng bộ hoàn toàn
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+
+            } catch (error) {
+                console.error(error);
+                showToast("Lỗi: " + error.message, "error");
+            } finally {
+                btn.innerText = "Lưu thay đổi";
+                btn.disabled = false;
+            }
+        };
+
+        // --- LOAD TỦ SÁCH ---
         async function loadLibrary(uid) {
             const container = document.getElementById('libraryList');
             try {
@@ -327,9 +384,6 @@
                         return;
                     }
 
-                    // Render danh sách truyện
-                    // Sử dụng reverse() để truyện mới đọc hiện lên đầu
-                    // Tạo bản copy bằng [...history] để không ảnh hưởng dữ liệu gốc
                     container.innerHTML = [...history].reverse().map(item => {
                         const total = parseInt(item.totalChapter) || 1;
                         const last = parseInt(item.lastChapter) || 1;
@@ -362,37 +416,27 @@
             }
         }
 
-        // --- LOGIC XÓA TRUYỆN (SỬ DỤNG FILTER & UPDATE) ---
+        // --- XÓA TRUYỆN ---
         window.confirmRemove = (bookId) => {
             const modal = document.getElementById('customModal');
             const confirmBtn = document.getElementById('modalConfirmBtn');
-            
             modal.classList.add('active');
             
-            // Gán sự kiện cho nút Xác nhận
             confirmBtn.onclick = async () => {
                 const btn = confirmBtn;
                 btn.innerText = "Đang xóa...";
-                
                 try {
                     const userRef = doc(db, "users", auth.currentUser.uid);
-                    
-                    // 1. Lọc bỏ truyện cần xóa khỏi mảng hiện tại
                     const newHistory = currentUserData.history.filter(item => item.id !== bookId);
-                    
-                    // 2. Cập nhật lại toàn bộ mảng lên Firestore
-                    await updateDoc(userRef, {
-                        history: newHistory
-                    });
-
+                    await updateDoc(userRef, { history: newHistory });
                     showToast("Đã xóa khỏi tủ sách");
                     closeCustomModal();
-                    loadLibrary(auth.currentUser.uid); // Tải lại giao diện
+                    loadLibrary(auth.currentUser.uid);
                 } catch (e) {
                     console.error(e);
                     showToast("Lỗi khi xóa", "error");
                 } finally {
-                    btn.innerText = "Xác nhận xóa";
+                    btn.innerText = "Xác nhận";
                 }
             };
         };
@@ -411,7 +455,8 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            toast.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+            toast.style.borderLeftColor = type === 'error' ? '#ff4757' : '#2ecc71';
+            toast.innerHTML = `<i class="fas ${type==='error'?'fa-exclamation-circle':'fa-check-circle'}" style="color:${type==='error'?'#ff4757':'#2ecc71'}"></i> ${msg}`;
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         };
@@ -419,26 +464,6 @@
         window.tryLogout = () => {
             if(confirm("Bạn có chắc chắn muốn đăng xuất?")) {
                 signOut(auth).then(() => window.location.href = 'index.html');
-            }
-        };
-
-        window.updateUserProfile = async (e) => {
-            e.preventDefault();
-            const user = auth.currentUser;
-            const newName = document.getElementById('inpName').value;
-            const newPhoto = document.getElementById('inpAvatar').value;
-            const btn = document.querySelector('.btn-save');
-
-            btn.innerText = "Đang lưu...";
-            try {
-                await updateProfile(user, { displayName: newName, photoURL: newPhoto });
-                document.getElementById('sidebarName').innerText = newName;
-                document.getElementById('sidebarAvatar').src = newPhoto || `https://ui-avatars.com/api/?name=${newName}&background=FF5E62&color=fff`;
-                showToast("Cập nhật thành công!");
-            } catch (error) {
-                showToast("Lỗi cập nhật!", "error");
-            } finally {
-                btn.innerText = "Lưu thay đổi";
             }
         };
     </script>
