@@ -659,7 +659,7 @@
                         const safeTitle = d.title ? d.title.replace(/'/g, "\\'") : "Chưa đặt tên";
                         const safeCover = d.cover || "https://via.placeholder.com/200x300/222/555?text=WibuPad";
                         const safeAuthor = d.authorName || 'Tác giả ẩn danh';
-                        const safeStatus = d.status === 'Published' ? 'Đã hoàn thiện' : 'Đang ra';
+                        const safeStatus = d.status === 'Published' ? 'Đã hoàn thiện' : 'Đang hoàn thiện';
 
                         container.innerHTML += `
                         <div class="book-card" onclick="window.location.href='/doc-truyen.html?id=${docSnap.id}'">
