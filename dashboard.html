@@ -456,23 +456,20 @@
         </div>
     </div>
 
-    <script type="module">
+<script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        // Đã xóa import Storage của Firebase vì không cần dùng nữa
 
         // Config Firebase
         const firebaseConfig = { apiKey: "AIzaSyAT6SnKojUmsisDhnuEtsL3H59NwrhZxDc", authDomain: "hopphim-29e1c.firebaseapp.com", projectId: "hopphim-29e1c", storageBucket: "hopphim-29e1c.firebasestorage.app", messagingSenderId: "1076044580405", appId: "1:1076044580405:web:a3485f8533604f305e537c", measurementId: "G-6RT4CX2NR0" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const storage = getStorage(app); 
 
         let currentUserId = null;
         let storiesCache = {}; 
-        
-        // 🔥 BIẾN LƯU TRỮ TAG HIỆN TẠI 🔥
         let currentTags = [];
 
         // HIỂN THỊ NGÀY THÁNG
@@ -492,12 +489,11 @@
         });
 
         /* =========================================
-           🔥 LOGIC XỬ LÝ HASHTAG (MỚI) 🔥
+           🔥 LOGIC XỬ LÝ HASHTAG 
            ========================================= */
         const tagsInput = document.getElementById('storyTagsInput');
         const tagsContainer = document.getElementById('tagsContainer');
 
-        // Hàm vẽ UI cho tag
         function renderTags() {
             tagsContainer.innerHTML = '';
             currentTags.forEach((tag, index) => {
@@ -509,40 +505,31 @@
             });
         }
 
-        // Hàm xóa tag khi bấm dấu X
         window.removeTag = (index) => {
             currentTags.splice(index, 1);
             renderTags();
         }
 
-        // Bắt sự kiện khi gõ vào ô input Tag
         tagsInput.addEventListener('keydown', function(e) {
-            // Khi bấm Enter hoặc dấu phẩy
             if (e.key === 'Enter' || e.key === ',') {
-                e.preventDefault(); // Chặn việc submit form mặc định
-                
-                // Lấy chữ, xóa khoảng trắng thừa, và xóa dấu # nếu user lỡ tay gõ
+                e.preventDefault(); 
                 let tagStr = tagsInput.value.trim().replace(/^#/, ''); 
-                
                 if (tagStr !== '') {
-                    // Cắt các tag theo dấu phẩy (trường hợp user copy paste: "a, b, c")
                     let tagsArray = tagStr.split(',').map(t => t.trim().replace(/^#/, '')).filter(t => t !== '');
-                    
                     tagsArray.forEach(tag => {
-                        // Tránh trùng lặp tag
                         if (!currentTags.includes(tag)) {
                             currentTags.push(tag);
                         }
                     });
-                    
-                    renderTags(); // Cập nhật lại UI
+                    renderTags(); 
                 }
-                tagsInput.value = ''; // Làm sạch ô input
+                tagsInput.value = ''; 
             }
         });
 
-
-        // XỬ LÝ HIỂN THỊ ẢNH XEM TRƯỚC (PREVIEW) KHI CHỌN FILE
+        /* =========================================
+           🔥 HIỂN THỊ ẢNH XEM TRƯỚC VÀ UPLOAD IMGBB 🔥
+           ========================================= */
         document.getElementById('storyCoverFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -554,14 +541,33 @@
             }
         });
 
-        // HÀM HỖ TRỢ UPLOAD ẢNH LÊN FIREBASE STORAGE
-        async function uploadImageToStorage(file) {
+        // HÀM UPLOAD ẢNH LÊN IMGBB (HOÀN TOÀN MIỄN PHÍ)
+        async function uploadImageToImgBB(file) {
             if (!file) return null;
-            const uniqueFileName = `covers/${currentUserId}_${Date.now()}_${file.name}`;
-            const storageRef = ref(storage, uniqueFileName);
-            await uploadBytes(storageRef, file);
-            const downloadURL = await getDownloadURL(storageRef);
-            return downloadURL;
+            
+            // 👇 THAY API KEY CỦA BẠN VÀO ĐÂY 👇
+            const IMGBB_API_KEY = "1488847e8e0c94e436037ff556736058"; 
+            
+            const formData = new FormData();
+            formData.append("image", file);
+
+            try {
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: "POST",
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    return data.data.url; // Trả về link ảnh trực tiếp
+                } else {
+                    throw new Error("Không thể tải ảnh lên ImgBB");
+                }
+            } catch (error) {
+                console.error("Lỗi up ảnh:", error);
+                throw error;
+            }
         }
 
         // TẢI DANH SÁCH TRUYỆN
@@ -672,12 +678,10 @@
             document.getElementById('storyDesc').value = '';
             document.getElementById('storyCategory').selectedIndex = 0;
             
-            // 🔥 Xóa Tags cũ
             currentTags = [];
             renderTags();
             document.getElementById('storyTagsInput').value = '';
 
-            // Reset File input và Preview
             document.getElementById('storyCoverFile').value = '';
             document.getElementById('oldCoverUrl').value = '';
             document.getElementById('coverPreview').src = 'https://via.placeholder.com/200x300/222/555?text=Preview';
@@ -697,12 +701,10 @@
             document.getElementById('storyDesc').value = data.desc;
             document.getElementById('storyCategory').value = data.category;
 
-            // 🔥 Đổ Tags từ Firebase ra (nếu có)
             currentTags = data.tags || [];
             renderTags();
             document.getElementById('storyTagsInput').value = '';
 
-            // Xử lý hiển thị ảnh cũ
             document.getElementById('storyCoverFile').value = ''; 
             document.getElementById('oldCoverUrl').value = data.cover || ''; 
             document.getElementById('coverPreview').src = data.cover || 'https://via.placeholder.com/200x300/222/555?text=Preview';
@@ -741,10 +743,9 @@
             try {
                 let finalCoverUrl = "https://via.placeholder.com/400x600/222/555?text=No+Cover";
                 if (file) {
-                    finalCoverUrl = await uploadImageToStorage(file);
+                    finalCoverUrl = await uploadImageToImgBB(file); // Gọi API ImgBB
                 }
 
-                // 🔥 Đã thêm trường tags: currentTags
                 const docRef = await addDoc(collection(db, "stories"), {
                     title: title, 
                     desc: desc,
@@ -787,10 +788,9 @@
                 let finalCoverUrl = oldCover; 
                 if (file) {
                     btn.innerText = "Đang tải ảnh mới...";
-                    finalCoverUrl = await uploadImageToStorage(file); 
+                    finalCoverUrl = await uploadImageToImgBB(file); // Gọi API ImgBB
                 }
 
-                // 🔥 Đã thêm trường tags: currentTags
                 const storyRef = doc(db, "stories", id);
                 await updateDoc(storyRef, {
                     title: title,
@@ -806,7 +806,7 @@
                 btn.disabled = false;
             } catch (e) {
                 console.error(e);
-                showToast("Lỗi cập nhật: " + e.message, "error");
+                showToast("Lỗi cập nhật!", "error");
                 btn.innerText = "Lưu Thay Đổi";
                 btn.disabled = false;
             }
