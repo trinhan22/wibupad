@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin truyện - WibuPad</title>
+    <link rel="icon" type="image/png" href="logo.png" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CORE SYSTEM & FONT FIX --- */
+        :root {
+            --bg-body: #0a0a0a;
+            --bg-panel: #161616;
+            --primary: #FF5E62;
+            --primary-gradient: linear-gradient(135deg, #FF9966 0%, #FF5E62 100%);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #888;
+            --font-main: 'Be Vietnam Pro', sans-serif;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: var(--font-main); -webkit-font-smoothing: antialiased; }
+        body { background-color: var(--bg-body); color: var(--text-main); overflow-x: hidden; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+        .text-gradient { background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+
+        /* --- HEADER --- */
+        header {
+            position: fixed; top: 0; width: 100%; height: 70px; padding: 0 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-weight: 900; font-size: 1.5rem; }
+        .logo img { height: 35px; }
+
+        /* --- STORY HERO --- */
+        .story-hero {
+            position: relative; width: 100%; min-height: 550px; padding-top: 120px;
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .hero-bg {
+            position: absolute; inset: 0;
+            background-size: cover; background-position: center;
+            filter: blur(60px) brightness(0.3); transform: scale(1.1); z-index: 1;
+        }
+        .hero-container {
+            position: relative; z-index: 2; width: 1100px; max-width: 90%;
+            display: grid; grid-template-columns: 280px 1fr; gap: 60px; align-items: end;
+            padding-bottom: 50px;
+        }
+        .story-cover-lg {
+            width: 100%; aspect-ratio: 2/3; border-radius: 16px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8); object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .story-title { font-size: 2.8rem; font-weight: 900; line-height: 1.2; margin-bottom: 15px; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .story-author { font-size: 1.1rem; font-weight: 600; margin-bottom: 30px; display: flex; align-items: center; gap: 12px; }
+        .story-author img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary); }
+
+        .story-stats { display: flex; gap: 40px; margin-bottom: 35px; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; display: block; font-weight: 700; }
+        .stat-value { font-size: 1.3rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .stat-value i { font-size: 1rem; color: var(--primary); }
+
+        .btn-group { display: flex; gap: 15px; }
+        .btn-main { padding: 15px 40px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1rem; transition: 0.3s; }
+        .btn-read { background: var(--primary-gradient); color: #fff; box-shadow: 0 10px 20px rgba(255, 94, 98, 0.3); }
+        .btn-read:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255, 94, 98, 0.5); }
+        
+        .btn-add { 
+            background: rgba(255,255,255,0.1); color: #fff; 
+            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); 
+            width: 60px; padding: 0; 
+        }
+        .btn-add:hover { 
+            background: rgba(255, 255, 255, 0.2); 
+            border-color: var(--primary); color: var(--primary); 
+            transform: scale(1.1) rotate(90deg); 
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-wrapper {
+            width: 1100px; max-width: 95%; margin: 60px auto;
+            display: grid; grid-template-columns: 1fr 320px; gap: 60px;
+        }
+        .content-panel { background: var(--bg-panel); padding: 40px; border-radius: 28px; border: 1px solid var(--glass-border); margin-bottom: 40px; }
+        .section-heading { font-size: 1.5rem; font-weight: 800; margin-bottom: 25px; color: #fff; display: flex; align-items: center; gap: 15px; }
+        .section-heading::after { content: ''; height: 2px; flex: 1; background: linear-gradient(to right, rgba(255,255,255,0.1), transparent); }
+        .story-description { color: #aaa; line-height: 1.8; font-size: 1.05rem; white-space: pre-line; }
+
+        .chapter-list { list-style: none; }
+        .chapter-item {
+            padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+            display: flex; justify-content: space-between; align-items: center;
+            transition: 0.3s; cursor: pointer; color: #ddd;
+        }
+        .chapter-item:hover { padding-left: 15px; color: var(--primary); background: rgba(255,255,255,0.01); }
+        .chapter-name { font-weight: 600; font-size: 1.05rem; }
+        .chapter-date { font-size: 0.85rem; color: var(--text-muted); }
+
+        #loading { position: fixed; inset: 0; background: #0a0a0a; z-index: 9999; display: flex; justify-content: center; align-items: center; }
+
+        @media (max-width: 900px) {
+            .hero-container { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+            .story-cover-lg { width: 200px; }
+            .main-wrapper { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading">
+        <i class="fas fa-circle-notch fa-spin" style="font-size: 3.5rem; color: #FF5E62;"></i>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">
+            <img src="logo.png" alt="WibuPad">
+            <span class="text-gradient">WIBUPAD</span>
+        </a>
+        <div style="display:flex; gap: 25px; align-items: center;">
+            <img id="headerAvatar" src="" style="width:40px; height:40px; border-radius:50%; border:2px solid #FF5E62; cursor: pointer;" onclick="window.location.href='profile.html'">
+        </div>
+    </header>
+
+    <div class="story-hero">
+        <div class="hero-bg" id="heroBg"></div>
+        <div class="hero-container">
+            <img id="storyCover" src="" class="story-cover-lg">
+            <div class="story-details-top">
+                <h1 class="story-title" id="storyTitle">Đang tải truyện...</h1>
+                <div class="story-author">
+                    <img id="authorAvatar" src="https://ui-avatars.com/api/?name=W&background=FF5E62&color=fff">
+                    <span id="storyAuthor">Tác giả ẩn danh</span>
+                </div>
+
+                <div class="story-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Lượt đọc</span>
+                        <div class="stat-value"><i class="fas fa-eye"></i> <span id="valReads">0</span></div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Bình chọn</span>
+                        <div class="stat-value"><i class="fas fa-star"></i> <span id="valVotes">0</span></div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Chương</span>
+                        <div class="stat-value"><i class="fas fa-list-ul"></i> <span id="valChapters">0</span></div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="btnReadNow" class="btn-main btn-read">
+                        <i class="fas fa-play"></i> Bắt đầu đọc
+                    </button>
+                    <button id="btnAddLib" class="btn-main btn-add" title="Thêm vào tủ sách">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-wrapper">
+        <section>
+            <div class="content-panel">
+                <h2 class="section-heading">Tóm tắt nội dung</h2>
+                <div class="story-description" id="storyDesc">Đang tải mô tả truyện...</div>
+            </div>
+            <div class="content-panel">
+                <h2 class="section-heading">Danh sách chương</h2>
+                <div class="chapter-list" id="chapterList"></div>
+            </div>
+        </section>
+
+        <aside class="sidebar-panel">
+            <div class="content-panel" style="padding: 30px;">
+                <h3 style="color:#fff; font-size:1.2rem; margin-bottom:20px;">Đề cử</h3>
+                <div id="recommendations">
+                    <p style="color:#666; font-size:0.9rem;">Tính năng đang phát triển...</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, orderBy, getDocs, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Config Firebase
+        const firebaseConfig = { apiKey: "AIzaSyAT6SnKojUmsisDhnuEtsL3H59NwrhZxDc", authDomain: "hopphim-29e1c.firebaseapp.com", projectId: "hopphim-29e1c", storageBucket: "hopphim-29e1c.firebasestorage.app", messagingSenderId: "1076044580405", appId: "1:1076044580405:web:a3485f8533604f305e537c", measurementId: "G-6RT4CX2NR0" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const storyId = urlParams.get('id');
+        let firstChapterId = null;
+        let storyDataGlobal = null;
+
+        // KIỂM TRA ĐĂNG NHẬP CHO AVATAR HEADER
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.currentUser = user;
+                document.getElementById('headerAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}&background=FF5E62&color=fff`;
+            }
+        });
+
+        // LOAD THÔNG TIN TRUYỆN
+        async function loadStoryDetail() {
+            if (!storyId) { window.location.href = 'index.html'; return; }
+
+            try {
+                const storyDoc = await getDoc(doc(db, "stories", storyId));
+                if (storyDoc.exists()) {
+                    const data = storyDoc.data();
+                    storyDataGlobal = data;
+                    
+                    document.title = `${data.title} - WibuPad`;
+                    document.getElementById('storyTitle').innerText = data.title;
+                    document.getElementById('storyDesc').innerText = data.desc || "Chưa có mô tả.";
+                    document.getElementById('storyCover').src = data.cover;
+                    document.getElementById('heroBg').style.backgroundImage = `url('${data.cover}')`;
+                    
+                    // FIXED: Gán giá trị vào thẻ span để tránh lỗi NaN khi parseInt
+                    document.getElementById('valReads').innerText = formatNumber(data.views);
+                    document.getElementById('valVotes').innerText = formatNumber(data.votes);
+                    document.getElementById('valChapters').innerText = data.chapterCount || 0;
+
+                    // FIXED: Hiển thị tên tác giả ngay lập tức
+                    document.getElementById('storyAuthor').innerText = data.authorName || "Tác giả ẩn danh";
+                    fetchAuthorAvatar(data.authorId);
+
+                    await loadChapters();
+                } else {
+                    window.location.href = 'index.html';
+                }
+            } catch (e) { console.error("Lỗi:", e); }
+        }
+
+        // LẤY AVATAR TÁC GIẢ
+        async function fetchAuthorAvatar(uid) {
+            if(!uid) return;
+            try {
+                const userSnap = await getDoc(doc(db, "users", uid));
+                if (userSnap.exists() && userSnap.data().photoURL) {
+                    document.getElementById('authorAvatar').src = userSnap.data().photoURL;
+                }
+            } catch (e) {}
+        }
+
+        // LOAD DANH SÁCH CHƯƠNG
+        async function loadChapters() {
+        const container = document.getElementById('chapterList');
+        const q = query(collection(db, "stories", storyId, "chapters"), orderBy("createdAt", "asc"));
+        try {
+            const snapshot = await getDocs(q);
+            container.innerHTML = '';
+            
+            if (snapshot.empty) {
+                container.innerHTML = '<p style="color:#555; padding: 20px;">Truyện chưa có chương nào được đăng tải.</p>';
+                document.getElementById('loading').style.display = 'none';
+                return;
+            }
+
+            snapshot.forEach((docSnap) => {
+                const chap = docSnap.data();
+                const id = docSnap.id;
+                
+                // Gán ID chương đầu tiên để nút "Bắt đầu đọc" hoạt động
+                if (!firstChapterId) firstChapterId = id;
+
+                const date = chap.createdAt ? new Date(chap.createdAt.seconds * 1000).toLocaleDateString('vi-VN') : "Mới";
+                
+                // 🔥 Hiển thị trực tiếp chap.title thay vì dùng biến đếm để tránh lỗi NaN
+                container.innerHTML += `
+                    <div class="chapter-item" onclick="window.location.href='doc.html?storyId=${storyId}&chapId=${id}'">
+                        <span class="chapter-name">${chap.title}</span>
+                        <span class="chapter-date">${date}</span>
+                    </div>`;
+            });
+            
+            document.getElementById('loading').style.display = 'none';
+        } catch (e) { 
+            console.error("Lỗi load chương:", e); 
+        }
+    }
+
+        // HÀM BẮT ĐẦU ĐỌC
+        document.getElementById('btnReadNow').onclick = () => {
+            if(firstChapterId) {
+                window.location.href = `doc.html?storyId=${storyId}&chapId=${firstChapterId}`;
+            } else {
+                alert("Truyện hiện chưa có chương nào để đọc. Vui lòng quay lại sau!");
+            }
+        };
+
+        // HÀM THÊM VÀO TỦ SÁCH
+        document.getElementById('btnAddLib').onclick = async () => {
+            if (!window.currentUser) {
+                alert("Vui lòng đăng nhập!");
+                window.location.href = 'login.html';
+                return;
+            }
+            try {
+                const userRef = doc(db, "users", window.currentUser.uid);
+                await updateDoc(userRef, {
+                    history: arrayUnion({
+                        id: storyId,
+                        title: storyDataGlobal.title,
+                        cover: storyDataGlobal.cover,
+                        lastChapter: 1,
+                        totalChapter: storyDataGlobal.chapterCount || 0,
+                        updatedAt: new Date().toISOString()
+                    })
+                });
+                const btn = document.getElementById('btnAddLib');
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                btn.style.background = '#2ecc71';
+                alert("Đã lưu vào tủ sách!");
+            } catch (e) { console.error(e); }
+        }
+
+        function formatNumber(num) {
+            let n = parseInt(num);
+            if (isNaN(n) || n === null) return 0;
+            return n >= 1000 ? (n / 1000).toFixed(1) + 'K' : n;
+        }
+
+        // Chạy khi load trang
+        window.addEventListener('load', loadStoryDetail);
+    </script>
+</body>
+</html>
