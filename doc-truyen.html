@@ -299,6 +299,117 @@
         @media (max-width: 900px) {
             .search-box { display: none; } /* Ẩn thanh search trên mobile, nếu cần sẽ làm popup sau giống WibuPhim */
         }
+
+/* =========================================
+   FACEBOOK COMMUNITY CARD
+   ========================================= */
+.community-section {
+    max-width: 1400px;
+    margin: 0 auto 60px; /* Cách dưới 60px */
+    padding: 0 4%;
+}
+
+.comm-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Nền Gradient từ Xanh Facebook sang Đen của Web */
+    background: linear-gradient(105deg, #1877F2 0%, #0f111a 60%);
+    padding: 30px 50px;
+    border-radius: 24px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(24, 119, 242, 0.25);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Hiệu ứng Hover: Nổi lên và sáng hơn */
+.comm-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(24, 119, 242, 0.4);
+    border-color: rgba(255,255,255,0.3);
+}
+
+/* Phần bên trái: Icon + Text */
+.comm-left {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    z-index: 2;
+}
+
+.comm-icon {
+    width: 60px; height: 60px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; color: #1877F2;
+    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+.comm-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.comm-desc {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 500;
+}
+
+/* Phần bên phải: Nút tham gia */
+.comm-btn {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    transition: 0.3s;
+    z-index: 2;
+}
+
+.comm-card:hover .comm-btn {
+    background: #fff;
+    color: #1877F2;
+}
+
+/* Hình nền trang trí mờ phía sau */
+.comm-bg-deco {
+    position: absolute;
+    right: -20px; top: -50%;
+    font-size: 15rem;
+    color: rgba(255,255,255,0.05);
+    transform: rotate(15deg);
+    pointer-events: none;
+    transition: 0.4s;
+}
+.comm-card:hover .comm-bg-deco {
+    transform: rotate(0deg) scale(1.1);
+    color: rgba(255,255,255,0.1);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .comm-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 20px;
+        gap: 20px;
+    }
+    .comm-left { flex-direction: column; gap: 15px; }
+    .comm-bg-deco { font-size: 10rem; top: 10%; right: -20%; }
+    .comm-btn { width: 100%; justify-content: center; }
+}
     </style>
 </head>
 <body>
@@ -417,6 +528,27 @@
         </aside>
     </main>
 
+<div class="community-section">
+    <a href="https://www.facebook.com/groups/1165263735526384/" target="_blank" class="comm-card">
+        <i class="fab fa-facebook comm-bg-deco"></i>
+        
+        <div class="comm-left">
+            <div class="comm-icon">
+                <i class="fab fa-facebook-f"></i>
+            </div>
+            <div class="comm-info">
+                <div class="comm-title">Cộng Đồng WibuTeam</div>
+                <div class="comm-desc">Tham gia Group Facebook để yêu cầu truyện, báo lỗi và chém gió cùng admin!</div>
+            </div>
+        </div>
+        
+        <div class="comm-btn">
+            Tham Gia Ngay <i class="fas fa-arrow-right"></i>
+        </div>
+    </a>
+</div>
+
+    <script src="backtotop.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
