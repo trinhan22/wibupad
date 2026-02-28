@@ -157,14 +157,20 @@
         .grid-books { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 25px; min-height: 100px; }
         
         /* CARD TRUYỆN */
-        .book-card { position: relative; cursor: pointer; transition: var(--transition); }
-        .book-card:hover { transform: translateY(-10px); }
-        .book-cover { 
-            width: 100%; aspect-ratio: 2/3; border-radius: 12px; overflow: hidden; position: relative; 
-            background: #1a1a1a; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        .book-card {
+            position: relative; cursor: pointer; transition: 0.3s;
+            display: flex; flex-direction: column; gap: 10px;
+            flex: 0 0 170px; /* Cố định chiều rộng trong slider */
         }
-        .book-cover img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .book-card:hover .book-cover img { transform: scale(1.1); filter: brightness(0.6); }
+        .book-card:hover { transform: translateY(-8px); z-index: 5; }
+
+        .book-cover {
+            width: 100%; aspect-ratio: 2/3; border-radius: 12px; overflow: hidden;
+            position: relative; background: #1a1a1a; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .book-cover img {
+            width: 100%; height: 100%; object-fit: cover; transition: 0.5s;
+        }
 
         .book-meta { margin-top: 15px; }
         .book-title { font-weight: 700; font-size: 1.05rem; line-height: 1.3; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #fff; }
@@ -331,61 +337,52 @@
             margin-bottom: 50px;
         }
 
-        .book-card { 
-            position: relative; 
-            cursor: pointer; 
-            transition: var(--transition); 
-            display: flex; 
-            flex-direction: column; 
-            gap: 14px; /* 🔥 Khoảng cách giữa ảnh bìa và tiêu đề */
+        .book-card {
+            position: relative; cursor: pointer; transition: 0.3s;
+            display: flex; flex-direction: column; gap: 10px;
+            flex: 0 0 170px; /* Cố định chiều rộng trong slider */
         }
+        .book-card:hover { transform: translateY(-8px); z-index: 5; }
 
-        .book-card:hover { transform: translateY(-8px); }
-
-        .book-cover { 
-            width: 100%; 
-            aspect-ratio: 2/3; 
-            border-radius: 16px; 
-            overflow: hidden; 
-            position: relative; 
-            background: #1a1a1a; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .book-cover {
+            width: 100%; aspect-ratio: 2/3; border-radius: 12px; overflow: hidden;
+            position: relative; background: #1a1a1a; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-
-        .book-cover img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            transition: 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+        .book-cover img {
+            width: 100%; height: 100%; object-fit: cover; transition: 0.5s;
         }
 
         /* Lớp phủ Hover Cinematic */
         .card-overlay {
-            position: absolute; 
-            inset: 0; 
-            background: rgba(0,0,0,0.5);
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 12px;
-            opacity: 0; 
-            transition: 0.3s ease; 
-            backdrop-filter: blur(3px);
-            z-index: 5;
+            position: absolute; inset: 0; background: rgba(0,0,0,0.6);
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+            opacity: 0; transition: 0.3s; backdrop-filter: blur(2px);
         }
 
         .book-card:hover .card-overlay { opacity: 1; }
-        .book-card:hover .book-cover img { transform: scale(1.1); filter: brightness(0.6); }
+        .book-card:hover .book-cover img { transform: scale(1.1); }
 
         .btn-overlay {
-            width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateY(15px);
+            width: 45px; height: 45px; border-radius: 50%; border: none;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1.1rem; color: #fff;
+            transform: translateY(20px); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .book-card:hover .btn-overlay { transform: translateY(0); }
 
-        .btn-play-ovl { background: var(--primary-gradient); color: #fff; box-shadow: 0 8px 20px rgba(255, 94, 98, 0.4); padding-left: 3px; }
-        .btn-add-ovl { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-play-ovl { 
+            background: var(--primary-gradient); 
+            box-shadow: 0 5px 15px rgba(255, 94, 98, 0.4); 
+            padding-left: 4px; /* Căn chỉnh icon play */
+        }
+        .btn-play-ovl:hover { transform: scale(1.1) !important; }
+
+        /* Nút Add (+) (Trong suốt) */
+        .btn-add-ovl { 
+            background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
+            transition-delay: 0.05s; /* Hiện chậm hơn nút play xíu */
+        }
+        .btn-add-ovl:hover { background: #fff; color: #000; transform: scale(1.1) !important; }
 
         /* Chỉnh tiêu đề truyện: Giãn dòng & Font size */
         .book-title { 
@@ -799,22 +796,23 @@
         .grid-books::-webkit-scrollbar { display: none; } /* Ẩn thanh cuộn Chrome */
 
         /* Card trong slider giữ nguyên kích thước */
-        .book-card { 
-            flex: 0 0 170px; /* Chiều rộng cố định cho mỗi card */
-            transition: 0.4s; 
+        .book-card {
+            position: relative; cursor: pointer; transition: 0.3s;
+            display: flex; flex-direction: column; gap: 10px;
+            flex: 0 0 170px; /* Cố định chiều rộng trong slider */
         }
-        .book-card:hover { transform: translateY(-10px); z-index: 2; }
+        .book-card:hover { transform: translateY(-8px); z-index: 5; }
 
         /* Nút điều hướng 2 bên */
         .nav-btn {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            width: 45px; height: 45px; border-radius: 50%;
-            background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2);
-            color: #fff; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 10; opacity: 0; transition: 0.3s;
+            position: absolute; top: 40%; transform: translateY(-50%);
+            width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.8); color: #fff; cursor: pointer; z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.3s;
         }
         .nav-btn:hover { background: var(--primary); border-color: var(--primary); }
-        .slider-container:hover .nav-btn { opacity: 1; } /* Hover vào vùng slider mới hiện nút */
+        .slider-container:hover .nav-btn { opacity: 1; }
         .prev-btn { left: -20px; }
         .next-btn { right: -20px; }
 
@@ -910,6 +908,10 @@
                 gap: 15px; 
                 grid-template-columns: repeat(2, 1fr); /* 2 cột trên điện thoại */
             }
+
+            .nav-btn { display: none; } /* Ẩn nút mũi tên trên mobile */
+            .book-card { flex: 0 0 140px; }
+            .btn-overlay { width: 35px; height: 35px; font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -994,68 +996,37 @@
         </div>
     </div>
 
+        <div class="ad-panel-wrapper">
+            <a href="https://wibuphim.netlify.app" target="_blank" class="ad-link">
+                <img src="https://wibuphim.netlify.app/WIBUPHIMADS.PNG" alt="Quảng cáo" class="ad-img-728">
+            </a>
+        </div>
+
     <main class="main-content">
-        
         <div class="topic-bar">
-            <div class="topic-item" onclick="document.getElementById('sec-tien-hiep').scrollIntoView({behavior:'smooth'})"><i class="fas fa-dragon topic-icon"></i><span class="topic-text">Tiên Hiệp</span></div>
-            <div class="topic-item" onclick="document.getElementById('sec-ngon-tinh').scrollIntoView({behavior:'smooth'})"><i class="fas fa-heart topic-icon"></i><span class="topic-text">Ngôn Tình</span></div>
-            <div class="topic-item" onclick="document.getElementById('sec-linh-di').scrollIntoView({behavior:'smooth'})"><i class="fas fa-ghost topic-icon"></i><span class="topic-text">Linh Dị</span></div>
-            <div class="topic-item" onclick="document.getElementById('sec-hanh-dong').scrollIntoView({behavior:'smooth'})"><i class="fas fa-fire topic-icon"></i><span class="topic-text">Hành Động</span></div>
-            <div class="topic-item" onclick="document.getElementById('sec-trinh-tham').scrollIntoView({behavior:'smooth'})"><i class="fas fa-search-plus topic-icon"></i><span class="topic-text">Trinh Thám</span></div>
+            <div class="topic-item" onclick="document.getElementById('sec-grid-tien-hiep')?.scrollIntoView({behavior:'smooth'})">
+                <i class="fas fa-dragon topic-icon"></i><span class="topic-text">Tiên Hiệp</span>
+            </div>
+            <div class="topic-item" onclick="document.getElementById('sec-grid-ngon-tinh')?.scrollIntoView({behavior:'smooth'})">
+                <i class="fas fa-heart topic-icon"></i><span class="topic-text">Ngôn Tình</span>
+            </div>
+            <div class="topic-item" onclick="document.getElementById('sec-grid-linh-di')?.scrollIntoView({behavior:'smooth'})">
+                <i class="fas fa-ghost topic-icon"></i><span class="topic-text">Linh Dị</span>
+            </div>
+            <div class="topic-item" onclick="document.getElementById('sec-grid-hanh-dong')?.scrollIntoView({behavior:'smooth'})">
+                <i class="fas fa-fire topic-icon"></i><span class="topic-text">Hành Động</span>
+            </div>
+            <div class="topic-item" onclick="document.getElementById('sec-grid-trinh-tham')?.scrollIntoView({behavior:'smooth'})">
+                <i class="fas fa-search-plus topic-icon"></i><span class="topic-text">Trinh Thám</span>
+            </div>
         </div>
-
-    <div class="ad-panel-wrapper">
-        <a href="https://wibuphim.netlify.app" target="_blank" class="ad-link">
-            <img src="https://wibuphim.netlify.app/WIBUPHIMADS.PNG" alt="Quảng cáo" class="ad-img-728">
-        </a>
-    </div>
-
-        <div class="section-header">
-            <div class="section-title text-gradient">Mới Cập Nhật</div>
-            <div class="section-line"></div>
-        </div>
-        <div class="grid-books" id="grid-new">
-            <div class="empty-placeholder">Đang tải dữ liệu...</div>
-        </div>
-
-        <div class="section-header" id="sec-tien-hiep">
-            <div class="section-title text-gradient">Thế Giới Tiên Hiệp</div>
-            <div class="section-line"></div>
-        </div>
-        <div class="grid-books" id="grid-tien-hiep"></div>
-
-        <div class="section-header" id="sec-ngon-tinh">
-            <div class="section-title text-gradient">Ngôn Tình Đặc Sắc</div>
-            <div class="section-line"></div>
-        </div>
-        <div class="grid-books" id="grid-ngon-tinh"></div>
-
-        <div class="section-header" id="sec-linh-di">
-            <div class="section-title text-gradient">Kinh Dị - Linh Dị</div>
-            <div class="section-line"></div>
-        </div>
-        <div class="grid-books" id="grid-linh-di"></div>
-
-        <div class="section-header" id="sec-hanh-dong">
-            <div class="section-title text-gradient">Hành Động - Võ Thuật</div>
-            <div class="section-line"></div>
-        </div>
-        <div class="grid-books" id="grid-hanh-dong"></div>
-
-        <div class="section-header" id="sec-trinh-tham">
-            <div class="section-title text-gradient">Trinh Thám - Bí Ẩn</div>
-            <div class="section-line"></div>
-        </div>
-        <div class="grid-books" id="grid-trinh-tham"></div>
-
     </main>
 
-    <div class="ad-panel-wrapper">
-        <a href="https://wibuanime.netlify.app" target="_blank" class="ad-link">
-            <img src="https://wibuphim.netlify.app/WIBUANIMEADS.PNG" alt="Quảng cáo" class="ad-img-728">
-        </a>
-    </div>
-
+        <div class="ad-panel-wrapper">
+            <a href="https://wibuanime.netlify.app" target="_blank" class="ad-link">
+                <img src="https://wibuphim.netlify.app/WIBUANIMEADS.PNG" alt="Quảng cáo" class="ad-img-728">
+            </a>
+        </div>
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
@@ -1131,422 +1102,287 @@
 
     <script src="backtotop.js"></script>
 <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, limit, getDocs, where, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, query, orderBy, limit, getDocs, where, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Config Firebase
-        const firebaseConfig = { apiKey: "AIzaSyAT6SnKojUmsisDhnuEtsL3H59NwrhZxDc", authDomain: "hopphim-29e1c.firebaseapp.com", projectId: "hopphim-29e1c", storageBucket: "hopphim-29e1c.firebasestorage.app", messagingSenderId: "1076044580405", appId: "1:1076044580405:web:a3485f8533604f305e537c", measurementId: "G-6RT4CX2NR0" };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    // 1. CẤU HÌNH ID TOP TRUYỆN HOT (Tự chỉnh tại đây)
+    const HOT_STORY_IDS = [
+        "uedmo0KsgsewX77ZRJOM", 
+        "zXfvFu8XgxyiRPu0ekke", 
+        "Jqpzkyw2lutFWh4Zbwq7",
+        "ybQwWkEqI5o3PgyaRXVB",
+        "zoyGGWarfj93spAAheaK",
+        "O0rMSthEgz44Rz6j0sNr",
+        "6bspqUUI53vXW6Abkaz2"
+    ];
 
-        // --- AUTH LOGIC (ĐÃ THÊM RELOAD ĐỂ CẬP NHẬT AVATAR MỚI) ---
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                // 🔥 FIX: Ép tải lại thông tin mới nhất từ server (nếu vừa đổi bên Profile)
-                await user.reload();
-                const currentUser = auth.currentUser; // Lấy lại user sau khi reload
-                
-                window.currentUser = currentUser;
-                document.getElementById('btnLogin').style.display = 'none';
-                document.getElementById('userContainer').style.display = 'block';
-                
-                // Cập nhật giao diện
-                document.getElementById('userAvatar').src = currentUser.photoURL || `https://ui-avatars.com/api/?name=${currentUser.displayName}&background=FF5E62&color=fff`;
-                document.getElementById('dropdownName').innerText = currentUser.displayName || "Thành viên";
-            } else {
-                window.currentUser = null;
-                document.getElementById('btnLogin').style.display = 'block';
-                document.getElementById('userContainer').style.display = 'none';
-            }
+    // Config Firebase
+    const firebaseConfig = { apiKey: "AIzaSyAT6SnKojUmsisDhnuEtsL3H59NwrhZxDc", authDomain: "hopphim-29e1c.firebaseapp.com", projectId: "hopphim-29e1c", storageBucket: "hopphim-29e1c.firebasestorage.app", messagingSenderId: "1076044580405", appId: "1:1076044580405:web:a3485f8533604f305e537c", measurementId: "G-6RT4CX2NR0" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // --- AUTH LOGIC ---
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            window.currentUser = user;
+            document.getElementById('btnLogin').style.display = 'none';
+            document.getElementById('userContainer').style.display = 'block';
+            document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}&background=FF5E62&color=fff`;
+            document.getElementById('dropdownName').innerText = user.displayName || "Thành viên";
+        } else {
+            window.currentUser = null;
+            document.getElementById('btnLogin').style.display = 'block';
+            document.getElementById('userContainer').style.display = 'none';
+        }
+    });
+
+    // --- MAIN LOAD LOGIC ---
+    async function loadAllSections() {
+        const mainContent = document.querySelector('.main-content');
+        const topicBar = document.querySelector('.topic-bar');
+        
+        // Xóa nội dung cũ nhưng giữ lại Topic Bar
+        mainContent.innerHTML = ''; 
+        if(topicBar) mainContent.appendChild(topicBar);
+        
+        // Đưa lại banner quảng cáo vào (nếu có)
+        const adPanel = document.querySelector('.ad-panel-wrapper');
+        if(adPanel) mainContent.appendChild(adPanel);
+
+        // 1. RENDER TOP HOT (THỦ CÔNG)
+        createSectionHTML(mainContent, 'grid-hot', '🔥 Top Truyện Hot', 'manual');
+        await fetchManualList('grid-hot', HOT_STORY_IDS);
+
+        // 2. RENDER MỚI CẬP NHẬT
+        createSectionHTML(mainContent, 'grid-new', 'Mới Cập Nhật', 'new');
+        fetchGenre('grid-new', query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(18)));
+
+        // 3. RENDER CÁC THỂ LOẠI
+        const genres = [
+            { id: 'grid-tien-hiep', name: 'Tiên Hiệp', title: 'Thế Giới Tiên Hiệp' },
+            { id: 'grid-ngon-tinh', name: 'Ngôn Tình', title: 'Ngôn Tình Đặc Sắc' },
+            { id: 'grid-linh-di', name: 'Linh Dị', title: 'Kinh Dị - Linh Dị' },
+            { id: 'grid-hanh-dong', name: 'Hành Động', title: 'Hành Động - Võ Thuật' },
+            { id: 'grid-trinh-tham', name: 'Trinh Thám', title: 'Trinh Thám - Bí Ẩn' }
+        ];
+
+        genres.forEach(g => {
+            createSectionHTML(mainContent, g.id, g.title, g.name); 
+            fetchGenre(g.id, query(collection(db, "stories"), where("category", "==", g.name), limit(10)));
         });
+    }
 
-        // --- TÍNH NĂNG: THÊM VÀO TỦ SÁCH (CHỐNG TRÙNG LẶP) ---
-        window.addToLibrary = async (id, title, cover) => {
-            const user = auth.currentUser;
-            if (!user) {
-                showConfirm('Yêu cầu đăng nhập', 'Bạn cần tài khoản để lưu truyện.', 'fa-lock', () => { window.location.href = '/login.html'; });
+    // --- HÀM TẠO HTML CHO MỖI SECTION ---
+    function createSectionHTML(container, id, title, typeKey) {
+        const div = document.createElement('div');
+        // ID header được đặt là 'sec-' + id để nút scroll tìm thấy (Ví dụ: sec-grid-tien-hiep)
+        div.innerHTML = `
+            <div class="section-header" id="sec-${id}">
+                <div class="section-title text-gradient">${title}</div>
+                <div class="view-all-btn" onclick="openFullList('${title}', '${typeKey}')">
+                    Xem tất cả <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            <div class="slider-container">
+                <button class="nav-btn prev-btn" onclick="scrollSlider('${id}', -1)"><i class="fas fa-chevron-left"></i></button>
+                <div class="grid-books" id="${id}">
+                    <div class="empty-placeholder" style="min-width:100%;">Đang tải...</div>
+                </div>
+                <button class="nav-btn next-btn" onclick="scrollSlider('${id}', 1)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        `;
+        container.appendChild(div);
+    }
+
+    // --- FETCH DATA FUNCTIONS ---
+    async function fetchManualList(elementId, idsArray) {
+        const container = document.getElementById(elementId);
+        const validIds = idsArray.filter(id => id && !id.includes("ID_TRUYEN"));
+        if (validIds.length === 0) { container.innerHTML = '<div style="text-align:center; width:100%; color:#666;">Chưa cấu hình Top.</div>'; return; }
+
+        try {
+            let html = '';
+            for (const id of validIds) {
+                const docSnap = await getDoc(doc(db, "stories", id));
+                if (docSnap.exists()) html += createCardHTML(docSnap);
+            }
+            container.innerHTML = html || '<div style="text-align:center; width:100%; color:#666;">Không tìm thấy truyện.</div>';
+        } catch (e) { console.error(e); }
+    }
+
+    async function fetchGenre(elementId, q) {
+        const container = document.getElementById(elementId);
+        try {
+            const snapshot = await getDocs(q);
+            if (!snapshot.empty) {
+                let html = '';
+                snapshot.forEach(docSnap => html += createCardHTML(docSnap));
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div style="text-align:center; width:100%; color:#666;">Chưa có truyện.</div>';
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    // --- TẠO HTML CARD TRUYỆN ---
+    function createCardHTML(docSnap) {
+        const d = docSnap.data();
+        const safeTitle = d.title ? d.title.replace(/'/g, "\\'") : "Vô danh";
+        const safeCover = d.cover || "https://via.placeholder.com/200x300";
+        const safeAuthor = d.authorName || 'Ẩn danh';
+        const statusBadge = d.status === 'Published' ? '<div class="badge-status" style="background:#2ecc71;">Full</div>' : '<div class="badge-status">On-going</div>';
+
+        return `
+            <div class="book-card" onclick="window.location.href='/doc-truyen.html?id=${docSnap.id}'">
+                <div class="book-cover">
+                    ${statusBadge}
+                    <img src="${safeCover}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300'">
+                    <div class="card-overlay">
+                        <button class="btn-overlay btn-play-ovl" title="Đọc ngay"
+                            onclick="event.stopPropagation(); window.location.href='/doc-truyen.html?id=${docSnap.id}'">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="btn-overlay btn-add-ovl" title="Thêm vào tủ sách"
+                            onclick="event.stopPropagation(); addToLibrary('${docSnap.id}', '${safeTitle}', '${safeCover}')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="book-meta">
+                    <div class="book-title" title="${d.title}">${d.title}</div>
+                    <div class="book-author">${safeAuthor}</div>
+                </div>
+            </div>`;
+    }
+
+    // --- 🔥 CÁC HÀM GẮN VÀO WINDOW ĐỂ GỌI TỪ HTML ---
+
+    // 1. Sáng tác
+    window.handleWriteRedirect = () => {
+        if(!window.currentUser) { 
+            showConfirm('Yêu cầu đăng nhập', 'Bạn cần tài khoản để sử dụng Studio sáng tác.', 'fa-lock', () => { window.location.href = '/login.html'; });
+        } else { 
+            window.location.href = 'dashboard.html'; 
+        }
+    }
+
+    // 2. Lưu Tủ Sách
+    window.addToLibrary = async (id, title, cover) => {
+        if (!auth.currentUser) {
+            showToast("Vui lòng đăng nhập để lưu truyện!", "error");
+            return;
+        }
+        try {
+            const userRef = doc(db, "users", auth.currentUser.uid);
+            const userSnap = await getDoc(userRef);
+            let history = userSnap.exists() ? (userSnap.data().history || []) : [];
+            
+            if (history.some(item => item.id === id)) {
+                showToast("Truyện đã có trong tủ sách!", "error");
                 return;
             }
-
-            try {
-                const userRef = doc(db, "users", user.uid);
-                const userSnap = await getDoc(userRef);
-                
-                let currentHistory = [];
-                if (userSnap.exists()) {
-                    currentHistory = userSnap.data().history || [];
-                }
-
-                // Kiểm tra xem truyện đã có trong list chưa
-                const exists = currentHistory.some(item => item.id === id);
-                if (exists) {
-                    showToast("Truyện này đã có trong tủ sách rồi!", "error"); // Báo lỗi nếu trùng
-                    return;
-                }
-
-                // Nếu chưa có, thêm mới vào đầu mảng
-                const newStory = {
-                    id: id,
-                    title: title,
-                    cover: cover,
-                    lastChapter: 1,
-                    totalChapter: 0, 
-                    addedAt: new Date().toISOString()
-                };
-
-                // Dùng Spread Operator để thêm vào đầu danh sách
-                const newHistory = [newStory, ...currentHistory];
-
-                // Cập nhật lại Firestore (Dùng update hoặc set nếu chưa có doc)
-                if (userSnap.exists()) {
-                    await updateDoc(userRef, { history: newHistory });
-                } else {
-                    await setDoc(userRef, { history: newHistory });
-                }
-
-                showToast("Đã thêm vào tủ sách!");
-
-            } catch (e) {
-                console.error("Lỗi thêm truyện:", e);
-                showToast("Lỗi khi thêm truyện", "error");
-            }
-        };
-
-        // --- LOGIC LOAD TRANG CHỦ MỚI ---
-        async function loadAllSections() {
-            // Danh sách các mục cần load
-            const sections = [
-                { id: 'new', title: 'Mới Cập Nhật', query: query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(10)) },
-                { id: 'tien-hiep', title: 'Thế Giới Tiên Hiệp', query: query(collection(db, "stories"), where("category", "==", "Tiên Hiệp"), limit(10)) },
-                { id: 'ngon-tinh', title: 'Ngôn Tình Đặc Sắc', query: query(collection(db, "stories"), where("category", "==", "Ngôn Tình"), limit(10)) },
-                { id: 'linh-di', title: 'Kinh Dị - Linh Dị', query: query(collection(db, "stories"), where("category", "==", "Linh Dị"), limit(10)) },
-                { id: 'hanh-dong', title: 'Hành Động - Võ Thuật', query: query(collection(db, "stories"), where("category", "==", "Hành Động"), limit(10)) },
-                { id: 'trinh-tham', title: 'Trinh Thám - Bí Ẩn', query: query(collection(db, "stories"), where("category", "==", "Trinh Thám"), limit(10)) }
-            ];
-
-            // Render khung HTML cho từng mục trước
-            const mainContent = document.querySelector('.main-content');
             
-            // Giữ lại cái Topic Bar, chỉ xóa các section cũ phía dưới
-            const topicBar = document.querySelector('.topic-bar');
-            mainContent.innerHTML = ''; 
-            mainContent.appendChild(topicBar);
-
-            for (const sec of sections) {
-                // Tạo khung HTML động
-                const sectionHTML = document.createElement('div');
-                sectionHTML.innerHTML = `
-                    <div class="section-header" id="sec-${sec.id}">
-                        <div class="section-title text-gradient">${sec.title}</div>
-                        <div class="view-all-btn" onclick="openFullList('${sec.title}', '${sec.id}')">
-                            Xem tất cả <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                    <div class="slider-container">
-                        <button class="nav-btn prev-btn" onclick="scrollSlider('slider-${sec.id}', -1)"><i class="fas fa-chevron-left"></i></button>
-                        <div class="grid-books" id="slider-${sec.id}">
-                            <div class="empty-placeholder" style="min-width: 100%;">Đang tải...</div>
-                        </div>
-                        <button class="nav-btn next-btn" onclick="scrollSlider('slider-${sec.id}', 1)"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                `;
-                mainContent.appendChild(sectionHTML);
-
-                // Gọi hàm load dữ liệu cho mục này
-                await loadSectionData(sec.query, `slider-${sec.id}`);
-            }
-        }
-
-        // Hàm tải dữ liệu và render card
-        async function loadSectionData(q, containerId) {
-            const container = document.getElementById(containerId);
-            try {
-                const snapshot = await getDocs(q);
-                if (!snapshot.empty) {
-                    let html = '';
-                    snapshot.forEach(docSnap => {
-                        html += createCardHTML(docSnap);
-                    });
-                    container.innerHTML = html;
-                } else {
-                    container.innerHTML = '<div style="color:#666; padding:20px; min-width:100%; text-align:center;">Chưa có truyện nào.</div>';
-                }
-            } catch (e) { console.error(e); }
-        }
-
-        // Hàm tạo HTML cho 1 Card (Dùng chung)
-        function createCardHTML(docSnap) {
-            const d = docSnap.data();
-            const safeTitle = d.title ? d.title.replace(/'/g, "\\'") : "Chưa đặt tên";
-            const safeCover = d.cover || "https://via.placeholder.com/200x300/222/555?text=WibuPad";
-            const safeAuthor = d.authorName || 'Tác giả ẩn danh';
-            const safeStatus = d.status === 'Published' ? 'Full' : 'On-going';
-
-            return `
-                <div class="book-card" onclick="window.location.href='/doc-truyen.html?id=${docSnap.id}'">
-                    <div class="book-cover">
-                        <div class="badge-status">${safeStatus}</div>
-                        <img src="${safeCover}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/222/555?text=WibuPad'">
-                        <div class="card-overlay">
-                            <button class="btn-overlay btn-play-ovl" title="Đọc ngay"><i class="fas fa-play"></i></button>
-                        </div>
-                    </div>
-                    <div class="book-meta">
-                        <div class="book-title" title="${d.title}">${d.title}</div>
-                        <div class="book-author">${safeAuthor}</div>
-                    </div>
-                </div>`;
-        }
-
-        // --- HÀM SCROLL SLIDER ---
-        window.scrollSlider = (id, direction) => {
-            const slider = document.getElementById(id);
-            const scrollAmount = 600; // Khoảng cách trượt
-            slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-        }
-
-        // --- HÀM MỞ POPUP FULL LIST ---
-        window.openFullList = async (title, typeId) => {
-            const modal = document.getElementById('fullListModal');
-            const container = document.getElementById('modalContent');
+            const newStory = { 
+                id: id, title: title, cover: cover, 
+                lastChapter: 1, totalChapter: 0, addedAt: new Date().toISOString() 
+            };
             
-            document.getElementById('modalTitle').innerText = title;
-            modal.classList.add('active');
-            container.innerHTML = '<div style="text-align:center; color:#fff; width:100%; padding:50px;"><i class="fas fa-circle-notch fa-spin" style="font-size:2rem;"></i><br>Đang tải...</div>';
-
-            // Tạo query lấy TẤT CẢ (hoặc 50 truyện) của thể loại đó
-            let q;
-            if(typeId === 'new') {
-                q = query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(50));
-            } else {
-                // Map lại ID sang Tên Thể Loại chuẩn trong DB
-                const catMap = {
-                    'tien-hiep': 'Tiên Hiệp', 'ngon-tinh': 'Ngôn Tình', 'linh-di': 'Linh Dị',
-                    'hanh-dong': 'Hành Động', 'trinh-tham': 'Trinh Thám'
-                };
-                q = query(collection(db, "stories"), where("category", "==", catMap[typeId]), limit(50));
-            }
-
-            try {
-                const snapshot = await getDocs(q);
-                if (!snapshot.empty) {
-                    let html = '';
-                    snapshot.forEach(docSnap => html += createCardHTML(docSnap));
-                    container.innerHTML = html;
-                } else {
-                    container.innerHTML = '<div style="text-align:center; color:#888; width:100%;">Không tìm thấy truyện nào.</div>';
-                }
-            } catch(e) { console.error(e); }
-        }
-
-        window.closeFullList = () => {
-            document.getElementById('fullListModal').classList.remove('active');
-        }
-
-        async function fetchGenre(elementId, q) {
-            const container = document.getElementById(elementId);
-            if(!container) return;
-            try {
-                const snapshot = await getDocs(q);
-                if (!snapshot.empty) {
-                    container.innerHTML = '';
-                    snapshot.forEach(docSnap => {
-                        const d = docSnap.data();
-                        
-                        // Xử lý an toàn dữ liệu (tránh undefined)
-                        const safeTitle = d.title ? d.title.replace(/'/g, "\\'") : "Chưa đặt tên";
-                        const safeCover = d.cover || "https://via.placeholder.com/200x300/222/555?text=WibuPad";
-                        const safeAuthor = d.authorName || 'Tác giả ẩn danh';
-                        const safeStatus = d.status === 'Published' ? 'Đã hoàn thiện' : 'Đang hoàn thiện';
-
-                        container.innerHTML += `
-                        <div class="book-card" onclick="window.location.href='/doc-truyen.html?id=${docSnap.id}'">
-                            <div class="book-cover">
-                                <div class="badge-status">${safeStatus}</div>
-                                <img src="${safeCover}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/222/555?text=WibuPad'">
-                                
-                                <div class="card-overlay">
-                                    <button class="btn-overlay btn-play-ovl" title="Đọc ngay"><i class="fas fa-play"></i></button>
-                                    <button class="btn-overlay btn-add-ovl" title="Lưu yêu thích" 
-                                        onclick="event.stopPropagation(); addToLibrary('${docSnap.id}', '${safeTitle}', '${safeCover}')">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="book-meta">
-                                <div class="book-title" title="${d.title}">${d.title}</div>
-                                <div class="book-author">${safeAuthor}</div>
-                            </div>
-                        </div>`;
-                    });
-                } else {
-                    container.innerHTML = '<div style="color:#666; font-size:0.9rem; padding: 20px; grid-column: 1/-1; text-align: center;">Chưa có truyện nào ở mục này.</div>';
-                }
-            } catch (e) { console.error("Lỗi tải mục " + elementId, e); }
-        }
-
-        // --- UTILS ---
-        window.showToast = (msg, type='success') => {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            // Đổi màu nếu là lỗi
-            if(type === 'error') toast.style.borderLeftColor = '#ff4757';
-            toast.innerHTML = `<i class="fas ${type==='error'?'fa-exclamation-circle':'fa-check-circle'}" style="color:${type==='error'?'#ff4757':'#2ecc71'}"></i> <span>${msg}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        window.handleWriteRedirect = () => {
-            if(!window.currentUser) { 
-                showConfirm('Yêu cầu đăng nhập', 'Bạn cần tài khoản để sử dụng Studio sáng tác.', 'fa-lock', () => { window.location.href = '/login.html'; });
-            } else { 
-                window.location.href = 'dashboard.html'; 
-            }
-        }
-
-        window.tryLogout = () => { 
-            showConfirm('Đăng xuất', 'Bạn có chắc chắn muốn đăng xuất?', 'fa-sign-out-alt', async () => {
-                await signOut(auth);
-                window.location.reload();
-            });
-        }
-
-        // Popup xác nhận
-        const modal = document.getElementById('customModal');
-        const confirmBtn = document.getElementById('modalConfirmBtn');
-        
-        window.showConfirm = (title, desc, iconClass, callback) => {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalDesc').innerText = desc;
-            document.getElementById('modalIcon').className = `fas ${iconClass}`;
+            if (userSnap.exists()) await updateDoc(userRef, { history: [newStory, ...history] });
+            else await setDoc(userRef, { history: [newStory] });
             
-            // Clone nút để xóa event listener cũ
-            const newBtn = confirmBtn.cloneNode(true);
-            confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
-            
-            newBtn.onclick = () => { callback(); closeCustomModal(); };
-            modal.classList.add('active');
+            showToast("Đã thêm vào tủ sách thành công!");
+        } catch (e) {
+            console.error(e);
+            showToast("Lỗi khi lưu truyện.", "error");
         }
-        
-        window.closeCustomModal = () => modal.classList.remove('active');
-        window.toggleDropdown = () => document.getElementById('dropdownMenu').classList.toggle('active');
-        
-        // Đóng dropdown khi click ra ngoài
-        window.onclick = (e) => { 
-            if (!e.target.matches('.user-avatar')) { 
-                const dd = document.getElementById('dropdownMenu'); 
-                if (dd?.classList.contains('active')) dd.classList.remove('active'); 
-            } 
-        }
+    };
 
-/* ==============================================
-           🔥 LOGIC TÌM KIẾM TRUYỆN TRÊN FIREBASE
-           ============================================== */
-        let searchTimeout;
-        
-        async function performSearch(keyword) {
-            const container = document.getElementById('desktopSearchResults');
-            if (!container) return;
-
-            // Nếu gõ ít hơn 2 chữ thì ẩn đi (tránh load data thừa)
-            if (!keyword || keyword.trim().length < 2) {
-                container.innerHTML = '';
-                container.classList.remove('active');
-                return;
-            }
-
-            // Hiện loading spinner
-            container.classList.add('active');
-            container.innerHTML = '<div style="color:#aaa; padding:20px; text-align:center;"><i class="fas fa-spinner fa-spin"></i> Đang tìm...</div>';
-
-            // Dùng timeout (Debounce) để người dùng gõ xong mới bắt đầu tìm, tránh gọi Database quá nhiều
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(async () => {
-                try {
-                    const searchWord = keyword.toLowerCase();
-                    
-                    // Vì Firebase không hỗ trợ Full-text search tốt, ta sẽ lấy 50 truyện mới nhất ra rồi lọc bằng Javascript (Cách này ổn cho thư viện < 1000 truyện)
-                    const q = query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(50));
-                    const snapshot = await getDocs(q);
-
-                    let html = '';
-                    let count = 0;
-
-                    snapshot.forEach(docSnap => {
-                        const m = docSnap.data();
-                        const titleLower = m.title ? m.title.toLowerCase() : "";
-                        const authorLower = m.authorName ? m.authorName.toLowerCase() : "";
-                        
-                        // Nếu tiêu đề hoặc tên tác giả chứa từ khóa
-                        if (titleLower.includes(searchWord) || authorLower.includes(searchWord)) {
-                            count++;
-                            // Chỉ lấy tối đa 8 kết quả cho đẹp
-                            if(count <= 8) {
-                                const cover = m.cover || "https://via.placeholder.com/200x300/222/555?text=WibuPad";
-                                const status = m.status === 'Published' ? 'Hoàn thành' : 'Đang ra';
-                                
-                                html += `
-                                    <div class="search-result-item" onclick="window.location.href='/doc-truyen.html?id=${docSnap.id}'">
-                                        <img src="${cover}" alt="${m.title}" loading="lazy">
-                                        <div class="search-result-info">
-                                            <div class="search-result-title">${m.title}</div>
-                                            <div class="search-result-meta">${status} • ${m.authorName || 'Ẩn danh'}</div>
-                                        </div>
-                                    </div>`;
-                            }
-                        }
-                    });
-
-                    if (html !== '') {
-                        container.innerHTML = html;
-                    } else {
-                        container.innerHTML = '<div style="color:#666; padding:20px; text-align:center;">Không tìm thấy truyện nào...</div>';
-                    }
-                } catch (e) {
-                    console.error("Lỗi tìm kiếm:", e);
-                    container.innerHTML = '<div style="color:#ff4757; padding:20px; text-align:center;">Lỗi hệ thống!</div>';
-                }
-            }, 600); // Đợi 0.6 giây sau khi người dùng ngừng gõ mới tìm
-        }
-
-        // Bắt sự kiện gõ phím trên thanh search
-        const desktopSearchInput = document.getElementById('searchInput');
-        if(desktopSearchInput) {
-            desktopSearchInput.addEventListener('input', (e) => performSearch(e.target.value));
-            
-            // Ẩn kết quả khi click chuột ra ngoài vùng tìm kiếm
-            document.addEventListener('click', (e) => {
-                const searchBox = document.querySelector('.search-box');
-                const results = document.getElementById('desktopSearchResults');
-                if (searchBox && !searchBox.contains(e.target) && results) {
-                    results.classList.remove('active');
-                }
-            });
-            
-            // Khi click lại vào ô input mà có chữ sẵn thì hiện lại kết quả
-            desktopSearchInput.addEventListener('focus', (e) => {
-                if(e.target.value.trim().length >= 2) {
-                    document.getElementById('desktopSearchResults').classList.add('active');
-                }
-            });
-        }
-
-        // Chạy khởi tạo
-        window.addEventListener('load', loadAllSections);
-
-        // Xử lý Header đổi màu khi cuộn trang
-        const headerElement = document.getElementById('siteHeader');
-        window.addEventListener('scroll', () => {
-            // Nếu cuộn xuống quá 50px thì thêm nền đục, ngược lại thì trong suốt
-            if (window.scrollY > 50) {
-                headerElement.classList.add('scrolled');
-            } else {
-                headerElement.classList.remove('scrolled');
-            }
+    // 3. Đăng xuất
+    window.tryLogout = () => {
+        showConfirm('Đăng xuất', 'Bạn có chắc chắn muốn đăng xuất?', 'fa-sign-out-alt', async () => {
+            await signOut(auth);
+            window.location.reload();
         });
-    </script>
+    }
+
+    // 4. Các tiện ích khác
+    window.scrollSlider = (id, direction) => {
+        const slider = document.getElementById(id);
+        if(slider) slider.scrollBy({ left: direction * 400, behavior: 'smooth' });
+    }
+
+    window.openFullList = async (title, typeKey) => {
+        const modal = document.getElementById('fullListModal');
+        const container = document.getElementById('modalContent');
+        document.getElementById('modalTitle').innerText = title;
+        modal.classList.add('active');
+        container.innerHTML = '<div style="text-align:center; padding:50px; color:#fff;"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
+
+        let q;
+        if(typeKey === 'manual') {
+            const validIds = HOT_STORY_IDS.filter(id => id && !id.includes("ID_TRUYEN"));
+            let html = '';
+            for (const id of validIds) {
+                const docSnap = await getDoc(doc(db, "stories", id));
+                if(docSnap.exists()) html += createCardHTML(docSnap);
+            }
+            container.innerHTML = html || 'Không có dữ liệu.';
+            return;
+        } else if(typeKey === 'new') {
+            q = query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(50));
+        } else {
+            q = query(collection(db, "stories"), where("category", "==", typeKey), limit(50));
+        }
+
+        try {
+            const snapshot = await getDocs(q);
+            let html = '';
+            snapshot.forEach(docSnap => html += createCardHTML(docSnap));
+            container.innerHTML = html || '<div style="text-align:center; color:#888;">Không có dữ liệu.</div>';
+        } catch(e) { console.error(e); }
+    }
+
+    window.closeFullList = () => document.getElementById('fullListModal').classList.remove('active');
+    
+    // Popup Xác nhận
+    const modal = document.getElementById('customModal');
+    const confirmBtn = document.getElementById('modalConfirmBtn');
+    
+    window.showConfirm = (title, desc, iconClass, callback) => {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalDesc').innerText = desc;
+        document.getElementById('modalIcon').className = `fas ${iconClass}`;
+        const newBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+        newBtn.onclick = () => { callback(); closeCustomModal(); };
+        modal.classList.add('active');
+    }
+    window.closeCustomModal = () => modal.classList.remove('active');
+
+    // Toast
+    window.showToast = (msg, type='success') => {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast`;
+        if(type==='error') toast.style.borderLeftColor = '#ff4757';
+        toast.innerHTML = `<i class="fas ${type==='error'?'fa-exclamation-circle':'fa-check-circle'}" style="color:${type==='error'?'#ff4757':'#2ecc71'}"></i> <span>${msg}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    // Header & Dropdown
+    window.toggleDropdown = () => document.getElementById('dropdownMenu').classList.toggle('active');
+    window.onclick = (e) => { if (!e.target.matches('.user-avatar')) document.getElementById('dropdownMenu')?.classList.remove('active'); }
+    
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('siteHeader');
+        if (header) header.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // START
+    window.addEventListener('load', loadAllSections);
+</script>
 </body>
 </html>
