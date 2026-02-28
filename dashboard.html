@@ -331,6 +331,50 @@
             cursor: pointer; opacity: 0.7; font-size: 0.8rem;
         }
         .tag-badge i:hover { opacity: 1; color: #fff; }
+
+        /* --- PANEL QUẢNG CÁO (ĐÃ CHỈNH 1456x180) --- */
+        .ad-panel-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 0 auto 40px;
+            padding: 0 4%;
+            width: 100%;
+            /* 👉 SỬA: Tăng độ rộng tối đa lên 1456px */
+            max-width: 1056px; 
+        }
+
+        .ad-link {
+            display: block;
+            width: 100%;
+            /* 👉 SỬA: Tăng độ rộng tối đa lên 1456px */
+            max-width: 1456px; 
+        }
+
+        .ad-img-728 {
+            width: 100%;
+            /* 👉 SỬA: Để height là auto để nó tự co giãn theo tỉ lệ */
+            height: auto; 
+            
+            /* 👉 QUAN TRỌNG: Thiết lập tỉ lệ khung hình chuẩn 1456/180 
+               Giúp ảnh luôn giữ đúng tỉ lệ dù ở màn hình to hay nhỏ */
+            aspect-ratio: 1456 / 180;
+
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            display: block;
+        }
+
+        /* --- Tự động co giãn trên Điện thoại (Mobile) --- */
+        @media (max-width: 768px) {
+            .ad-img-728 {
+                height: auto;
+                /* 👉 SỬA: Cập nhật tỉ lệ cho mobile cũng theo kích thước mới */
+                aspect-ratio: 1456 / 180; 
+            }
+        }
     </style>
 </head>
 <body>
@@ -457,6 +501,12 @@
                 <button id="btnSaveStory" class="btn-confirm-modal" onclick="handleFormSubmit()">Lưu Lại</button>
             </div>
         </div>
+    </div>
+
+    <div class="ad-panel-wrapper">
+        <a href="https://wibuphim.netlify.app" target="_blank" class="ad-link">
+            <img src="https://wibuphim.netlify.app/WIBUPHIMADS.PNG" alt="Quảng cáo" class="ad-img-728">
+        </a>
     </div>
 
 <script type="module">

@@ -419,9 +419,9 @@
             gap: 15px;
             margin: 0 auto 40px;
             padding: 0 4%;
-            width: 80%;
+            width: 100%;
             /* 👉 SỬA: Tăng độ rộng tối đa lên 1456px */
-            max-width: 1456px; 
+            max-width: 1056px; 
         }
 
         .ad-link {
@@ -454,12 +454,280 @@
                 aspect-ratio: 1456 / 180; 
             }
         }
+
+/* =========================================
+           MOBILE OPTIMIZATION (RESPONSIVE)
+           ========================================= */
+        @media (max-width: 900px) {
+            /* 1. Header */
+            header { padding: 0 15px; height: 60px; }
+            .logo span { font-size: 1.3rem; }
+
+            /* 2. Hero Section (Phần đầu trang) */
+            .story-hero {
+                padding-top: 80px; /* Giảm khoảng cách trên */
+                min-height: auto; /* Để chiều cao tự động theo nội dung */
+                padding-bottom: 40px;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr; /* Chuyển về 1 cột dọc */
+                gap: 25px;
+                text-align: center; /* Căn giữa nội dung */
+                justify-items: center;
+            }
+
+            .story-cover-lg {
+                width: 180px; /* Thu nhỏ ảnh bìa */
+                box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            }
+
+            .story-details-top {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+
+            .story-title {
+                font-size: 1.8rem; /* Giảm size chữ tiêu đề */
+                line-height: 1.3;
+                margin-bottom: 10px;
+            }
+
+            .story-author {
+                justify-content: center;
+                margin-bottom: 20px;
+                background: rgba(255,255,255,0.05);
+                padding: 5px 15px;
+                border-radius: 50px;
+            }
+
+            /* Tags & Stats */
+            .story-tags { 
+                justify-content: center; 
+                margin-bottom: 25px;
+            }
+            
+            .story-stats {
+                width: 100%;
+                justify-content: center; /* Căn giữa các chỉ số */
+                gap: 20px; /* Giảm khoảng cách giữa các số */
+                margin-bottom: 30px;
+                background: rgba(0,0,0,0.3); /* Thêm nền nhẹ cho dễ nhìn */
+                padding: 15px;
+                border-radius: 12px;
+            }
+            
+            .stat-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            /* Nút bấm */
+            .btn-group {
+                width: 100%;
+                justify-content: center;
+                gap: 15px;
+            }
+            .btn-read {
+                width: auto;
+                flex: 1; /* Nút đọc giãn rộng ra */
+                max-width: 250px;
+                height: 50px; /* Nút cao hơn dễ bấm */
+                font-size: 1.1rem;
+            }
+            .btn-add {
+                width: 50px;
+                height: 50px;
+                border-radius: 12px; /* Bo góc vuông hơn chút cho nút vuông */
+            }
+
+            /* 3. Main Content (Nội dung chính) */
+            .main-wrapper {
+                grid-template-columns: 1fr; /* 1 cột duy nhất */
+                gap: 30px;
+                margin: 0 auto;
+                padding: 0 15px 40px; /* Padding 2 bên lề */
+            }
+
+            .content-panel {
+                padding: 25px 20px; /* Giảm padding trong khung */
+            }
+
+            .section-heading { font-size: 1.3rem; }
+            .story-description { font-size: 0.95rem; text-align: justify; }
+
+            /* Danh sách chương */
+            .chapter-item {
+                padding: 15px 0; /* Tăng vùng bấm cho ngón tay */
+            }
+            .chapter-name { font-size: 0.95rem; }
+
+            /* 4. Sidebar (Đề cử) */
+            .sidebar-panel {
+                order: 2; /* Đẩy xuống dưới cùng (nếu cần thiết) */
+            }
+            
+            /* Banner Quảng cáo */
+            .ad-panel-wrapper { padding: 0 15px; }
+        }
+
+/* =========================================
+           5. FOOTER (ĐÃ FIX LỖI ẢNH TO)
+           ========================================= */
+        footer { 
+            background: #050505; 
+            border-top: 1px solid #1a1a1a; 
+            padding: 80px 5% 30px; 
+            margin-top: 100px; 
+        }
+
+        .footer-grid { 
+            display: grid; 
+            grid-template-columns: 1.5fr 1fr 1fr 1fr; /* Cột đầu to hơn cho Logo */
+            gap: 50px; 
+            margin-bottom: 50px; 
+        }
+
+        /* FIX QUAN TRỌNG: Container chứa Logo + Tên */
+        .footer-logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            margin-bottom: 20px; 
+        }
+
+        /* FIX QUAN TRỌNG: Giới hạn chiều cao ảnh logo */
+        .footer-logo img { 
+            height: 50px; /* Cố định chiều cao, chiều rộng tự chỉnh */
+            width: auto; 
+            object-fit: contain; 
+        }
+
+        .footer-logo span { 
+            font-weight: 900; 
+            font-size: 1.8rem; 
+            color: #fff; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .footer-desc { 
+            color: #777; 
+            line-height: 1.6; 
+            font-size: 0.95rem; 
+            margin-bottom: 25px; 
+            max-width: 90%; 
+        }
+        
+        .footer-socials { display: flex; gap: 12px; }
+        .social-link { 
+            width: 40px; height: 40px; border-radius: 50%; 
+            background: #111; border: 1px solid #222;
+            display: flex; align-items: center; justify-content: center; 
+            color: #888; transition: 0.3s; text-decoration: none; 
+        }
+        .social-link:hover { 
+            background: #FF5E62; color: #fff; 
+            transform: translateY(-3px); border-color: transparent; 
+        }
+
+        .footer-col h4 { 
+            color: #fff; font-size: 0.95rem; font-weight: 700; 
+            margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; 
+        }
+        
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { 
+            color: #666; text-decoration: none; transition: 0.3s; font-size: 0.95rem; display: block; 
+        }
+        .footer-links a:hover { color: #FF5E62; transform: translateX(5px); }
+        
+        .footer-bottom { 
+            border-top: 1px solid #1a1a1a; padding-top: 30px; 
+            text-align: center; color: #444; font-size: 0.85rem; 
+        }
+
+        /* MOBILE RESPONSIVE CHO FOOTER */
+        @media (max-width: 900px) {
+            .footer-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+            .footer-logo { justify-content: center; }
+            .footer-desc { margin: 0 auto 25px; }
+            .footer-socials { justify-content: center; }
+            .footer-links a:hover { transform: none; }
+        }
+
+        /* --- SỬA LẠI POPUP (MODAL) TRONG ẢNH 1 --- */
+        .modal-content { 
+            width: 850px; max-width: 95%; height: 500px; 
+            background: #121212; border-radius: 20px; 
+            display: flex; overflow: hidden; 
+            box-shadow: 0 50px 100px rgba(0,0,0,0.9); 
+            border: 1px solid var(--glass-border);
+            animation: zoomIn 0.4s ease;
+        }
+        
+        /* Cột trái chứa ảnh - Thêm nền xám để đỡ trống khi chưa có ảnh */
+        .modal-left { 
+            width: 40%; position: relative; 
+            background: #1a1a1a; 
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-left img { 
+            width: 100%; height: 100%; object-fit: cover; 
+            opacity: 0.9;
+        }
+        /* Hiệu ứng bóng mờ đè lên ảnh để hòa vào nền đen */
+        .modal-left::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to right, transparent 80%, #121212 100%);
+        }
+
+        /* --- CUSTOM ALERT POPUP --- */
+        .alert-overlay {
+            position: fixed; inset: 0; z-index: 99999;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .alert-overlay.active { display: flex; opacity: 1; }
+        
+        .alert-box {
+            background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1);
+            width: 320px; padding: 30px 25px; border-radius: 20px;
+            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .alert-overlay.active .alert-box { transform: scale(1); }
+
+        .alert-icon { font-size: 3rem; color: var(--primary); margin-bottom: 20px; text-shadow: 0 0 20px rgba(255, 94, 98, 0.4); }
+        .alert-title { color: #fff; font-size: 1.2rem; margin-bottom: 10px; font-weight: 700; }
+        .alert-desc { color: #aaa; font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px; }
+        
+        .alert-btn {
+            background: var(--primary-gradient); color: #fff; border: none;
+            padding: 10px 30px; border-radius: 50px; font-weight: 700;
+            cursor: pointer; transition: 0.3s; width: 100%; font-size: 0.95rem;
+        }
+        .alert-btn:hover { box-shadow: 0 5px 15px rgba(255, 94, 98, 0.4); transform: translateY(-2px); }
     </style>
 </head>
 <body>
 
     <div id="loading">
         <i class="fas fa-circle-notch fa-spin" style="font-size: 3.5rem; color: #FF5E62;"></i>
+    </div>
+
+    <div id="alertModal" class="alert-overlay">
+        <div class="alert-box">
+            <i class="fas fa-circle-notch fa-spin alert-icon"></i>
+            <h3 class="alert-title">Đang xử lý...</h3>
+            <p class="alert-desc" id="alertMessage">Dữ liệu đang được tải, vui lòng đợi trong giây lát.</p>
+            <button class="alert-btn" onclick="closeAlert()">Đã hiểu</button>
+        </div>
     </div>
 
     <header id="siteHeader">
@@ -573,8 +841,8 @@
     </main>
 
     <div class="ad-panel-wrapper">
-        <a href="https://wibuphim.netlify.app" target="_blank" class="ad-link">
-            <img src="https://wibuphim.netlify.app/WIBUPHIMADS.PNG" alt="Quảng cáo" class="ad-img-728">
+        <a href="https://wibuanime.netlify.app" target="_blank" class="ad-link">
+            <img src="https://wibuphim.netlify.app/WIBUANIMEADS.PNG" alt="Quảng cáo" class="ad-img-728">
         </a>
     </div>
 
@@ -598,11 +866,75 @@
     </a>
 </div>
 
+
+<footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <img src="logo.png" alt="WibuPad"> 
+                    <span class="text-gradient">WIBUPAD</span>
+                </div>
+                <p class="footer-desc">
+                    Trải nghiệm đọc truyện mượt mà. Cộng đồng văn học mạng chất lượng cao.
+                </p>
+                <div class="footer-socials">
+                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Khám phá</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Bảng Xếp Hạng</a></li>
+                    <li><a href="#">Truyện Mới</a></li>
+                    <li><a href="#">Review Truyện</a></li>
+                    <li><a href="#">Tìm Kiếm Nâng Cao</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Hỗ trợ</h4>
+                <ul class="footer-links">
+                    <li><a href="dieukhoan.html">Điều Khoản Dịch Vụ</a></li>
+                    <li><a href="chinhsach.html">Chính Sách Bảo Mật</a></li>
+                    <li><a href="vechungtoi.html">Về Chúng Tôi</a></li>
+                    <li><a href="lienhequangcao.html">Liên Hệ Quảng Cáo</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Tải Ứng dụng</h4>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button style="background:#1a1a1a; color:#fff; border:1px solid #333; padding:10px 15px; border-radius:8px; cursor:pointer; text-align:left; display: flex; align-items: center; gap: 10px; transition: 0.3s;" onmouseover="this.style.borderColor='#FF5E62'" onmouseout="this.style.borderColor='#333'">
+                        <i class="fab fa-apple" style="font-size: 1.2rem;"></i>
+                        <div style="line-height: 1.2;">
+                            <div style="font-size: 0.7rem; color: #888;">Download on</div>
+                            <div style="font-weight: 700;">App Store</div>
+                        </div>
+                    </button>
+                    
+                    <button style="background:#1a1a1a; color:#fff; border:1px solid #333; padding:10px 15px; border-radius:8px; cursor:pointer; text-align:left; display: flex; align-items: center; gap: 10px; transition: 0.3s;" onmouseover="this.style.borderColor='#FF5E62'" onmouseout="this.style.borderColor='#333'">
+                        <i class="fab fa-google-play" style="font-size: 1.2rem;"></i>
+                        <div style="line-height: 1.2;">
+                            <div style="font-size: 0.7rem; color: #888;">Get it on</div>
+                            <div style="font-weight: 700;">Google Play</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            &copy; 2026 WibuPad. All Rights Reserved By WibuTeam.
+        </div>
+    </footer>
     <script src="backtotop.js"></script>
-    <script type="module">
+<script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        // 🔥 Nhớ import thêm limit và where
+        // 🔥 Import đầy đủ các hàm cần thiết
         import { getFirestore, doc, getDoc, collection, query, orderBy, getDocs, updateDoc, setDoc, limit, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Config Firebase
@@ -615,88 +947,75 @@
         const storyId = urlParams.get('id');
         let firstChapterId = null;
         let storyDataGlobal = null;
+        
+        // 🔥 THÊM DÒNG NÀY: Mặc định là đang tải
+        let isLoadingChapters = true;
 
         // --- 1. AUTH CHECK ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                await user.reload(); 
                 window.currentUser = auth.currentUser;
                 document.getElementById('headerAvatar').src = window.currentUser.photoURL || `https://ui-avatars.com/api/?name=${window.currentUser.displayName}&background=FF5E62&color=fff`;
                 checkLibraryStatus(window.currentUser.uid);
             }
         });
 
-        // --- 2. HÀM CHECK TỦ SÁCH ---
-        async function checkLibraryStatus(uid) {
-            if (!storyId) return;
-            try {
-                const userDoc = await getDoc(doc(db, "users", uid));
-                if (userDoc.exists()) {
-                    const history = userDoc.data().history || [];
-                    if (history.some(item => item.id === storyId)) {
-                        updateBtnStatus();
-                    }
-                }
-            } catch (e) { console.error(e); }
-        }
-
-        function updateBtnStatus() {
-            const btn = document.getElementById('btnAddLib');
-            if(btn) {
-                btn.innerHTML = '<i class="fas fa-check"></i>';
-                btn.style.background = '#2ecc71';
-                btn.style.borderColor = '#2ecc71';
-                btn.title = "Đã có trong tủ sách";
-                btn.onclick = () => alert("Truyện này đã có trong tủ sách của bạn!");
-            }
-        }
-
-        // --- 3. LOAD CHI TIẾT TRUYỆN ---
+        // --- 2. LOAD CHÍNH: THÔNG TIN TRUYỆN ---
         async function loadStoryDetail() {
             if (!storyId) { window.location.href = 'index.html'; return; }
 
             try {
+                // Bước 1: Chỉ lấy thông tin truyện trước
                 const storyDoc = await getDoc(doc(db, "stories", storyId));
                 
                 if (storyDoc.exists()) {
                     const data = storyDoc.data();
                     storyDataGlobal = data;
                     
-                    document.title = `${data.title} - WibuPad`;
-                    document.getElementById('storyTitle').innerText = data.title;
-                    document.getElementById('storyDesc').innerText = data.desc || "Chưa có mô tả.";
-                    document.getElementById('storyCover').src = data.cover;
-                    document.getElementById('heroBg').style.backgroundImage = `url('${data.cover}')`;
-                    
-                    document.getElementById('valReads').innerText = formatNumber(data.views);
-                    document.getElementById('valVotes').innerText = formatNumber(data.votes || 0);
-                    document.getElementById('valChapters').innerText = data.chapterCount || 0;
+                    // Render UI ngay lập tức
+                    renderStoryInfo(data);
 
-                    document.getElementById('storyAuthor').innerText = data.authorName || "Tác giả ẩn danh";
+                    // 🔥 TẮT LOADING NGAY LẬP TỨC
+                    document.getElementById('loading').style.display = 'none';
+
+                    // Bước 2: Tải các phần phụ (Tách riêng để không chặn nhau)
                     fetchAuthorAvatar(data.authorId);
-
-                    // 🔥 RENDER HASHTAG
-                    const tagsContainer = document.getElementById('storyTags');
-                    if (data.tags && data.tags.length > 0) {
-                        tagsContainer.innerHTML = data.tags.map(tag => `<span class="tag-item">#${tag}</span>`).join('');
-                    } else {
-                        // Nếu không có tag, có thể ẩn luôn thẻ div hoặc để trống
-                        tagsContainer.style.display = 'none';
-                    }
-
-                    // Tải danh sách chương & đề cử đồng thời
-                    await Promise.all([loadChapters(), loadRecommendations()]); 
+                    loadChapters();
+                    loadRecommendations(); 
 
                 } else {
                     window.location.href = 'index.html';
                 }
             } catch (e) { 
                 console.error("Lỗi tải trang:", e);
-                document.getElementById('chapterList').innerHTML = '<p style="color:red; padding:20px;">Lỗi tải dữ liệu. Vui lòng thử lại.</p>';
-            } finally {
-                document.getElementById('loading').style.display = 'none';
+                document.getElementById('loading').innerHTML = '<p style="color:red">Lỗi kết nối!</p>';
             }
         }
+
+        // Hàm tách riêng để render thông tin cơ bản
+        function renderStoryInfo(data) {
+            document.title = `${data.title} - WibuPad`;
+            document.getElementById('storyTitle').innerText = data.title;
+            document.getElementById('storyDesc').innerText = data.desc || "Chưa có mô tả.";
+            document.getElementById('storyCover').src = data.cover;
+            document.getElementById('heroBg').style.backgroundImage = `url('${data.cover}')`;
+            
+            document.getElementById('valReads').innerText = formatNumber(data.views || 0);
+            document.getElementById('valVotes').innerText = formatNumber(data.votes || 0);
+            document.getElementById('valChapters').innerText = data.chapterCount || 0;
+            document.getElementById('storyAuthor').innerText = data.authorName || "Tác giả ẩn danh";
+
+            // Render Hashtag
+            const tagsContainer = document.getElementById('storyTags');
+            if (data.tags && data.tags.length > 0) {
+                tagsContainer.innerHTML = data.tags.map(tag => `<span class="tag-item">#${tag}</span>`).join('');
+                tagsContainer.style.display = 'flex';
+            } else {
+                tagsContainer.style.display = 'none';
+            }
+        }
+
+        // --- 3. CÁC HÀM PHỤ (CHẠY NGẦM) ---
 
         async function fetchAuthorAvatar(uid) {
             if(!uid) return;
@@ -710,77 +1029,88 @@
 
         async function loadChapters() {
             const container = document.getElementById('chapterList');
+            const btnRead = document.getElementById('btnReadNow');
+            
+            // Đổi nút thành trạng thái đang tải
+            btnRead.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...';
+            btnRead.style.opacity = '0.7';
+
             const q = query(collection(db, "stories", storyId, "chapters"), orderBy("createdAt", "asc"));
             
             try {
                 const snapshot = await getDocs(q);
                 
+                // Đánh dấu đã tải xong
+                isLoadingChapters = false; 
+                btnRead.style.opacity = '1'; // Sáng lại bình thường
+
                 if (snapshot.empty) {
-                    container.innerHTML = '<p style="color:#555; padding: 20px;">Truyện chưa có chương nào được đăng tải.</p>';
+                    container.innerHTML = '<p style="color:#555; padding: 20px;">Truyện chưa có chương nào.</p>';
+                    btnRead.innerHTML = 'Chưa có chương'; // Cập nhật nút
                     return;
                 }
 
-                let html = '';
+                const htmlArray = [];
                 snapshot.forEach((docSnap) => {
                     const chap = docSnap.data();
                     const id = docSnap.id;
-                    
-                    if (!firstChapterId) firstChapterId = id;
+                    if (!firstChapterId) firstChapterId = id; 
 
                     const date = chap.createdAt ? new Date(chap.createdAt.seconds * 1000).toLocaleDateString('vi-VN') : "Mới";
                     
-                    html += `
+                    htmlArray.push(`
                         <div class="chapter-item" onclick="window.location.href='doc.html?storyId=${storyId}&chapId=${id}'">
                             <span class="chapter-name">${chap.title}</span>
                             <span class="chapter-date">${date}</span>
-                        </div>`;
+                        </div>
+                    `);
                 });
+                container.innerHTML = htmlArray.join('');
+
+                // Tải xong và có chương -> Cập nhật lại nút
+                if (firstChapterId) {
+                    btnRead.innerHTML = '<i class="fas fa-play"></i> Bắt đầu đọc';
+                }
                 
-                container.innerHTML = html;
             } catch (e) { 
                 console.error("Lỗi load chương:", e);
+                container.innerHTML = '<p style="color:#555; padding: 20px;">Không tải được chương.</p>';
+                isLoadingChapters = false; // Dù lỗi cũng phải tắt trạng thái loading
+                btnRead.innerHTML = 'Lỗi tải chương';
             }
         }
 
-        // --- 4. TẢI ĐỀ CỬ TRUYỆN (RANDOM WORKAROUND) ---
-        // Firebase không có hàm random trực tiếp. Ta sẽ lấy 15 truyện mới nhất 
-        // đã xuất bản, sau đó trộn ngẫu nhiên (shuffle) và lấy 4 truyện.
         async function loadRecommendations() {
             const recContainer = document.getElementById('recommendations');
             try {
-                const q = query(collection(db, "stories"), where("status", "==", "Published"), limit(15));
+                // Truy vấn lấy 10 truyện đã published
+                const q = query(collection(db, "stories"), where("status", "==", "Published"), limit(10)); 
                 const snapshot = await getDocs(q);
                 
                 let storiesArray = [];
                 snapshot.forEach(docSnap => {
-                    // Tránh đề cử lại chính truyện đang xem
+                    // Loại trừ truyện hiện tại
                     if (docSnap.id !== storyId) {
                         storiesArray.push({ id: docSnap.id, ...docSnap.data() });
                     }
                 });
 
                 if (storiesArray.length === 0) {
-                    recContainer.innerHTML = '<p style="color:#666; font-size:0.9rem;">Chưa có truyện đề cử.</p>';
+                    recContainer.innerHTML = '<p style="color:#666; font-size:0.9rem;">Chưa có đề cử.</p>';
                     return;
                 }
 
-                // Thuật toán xáo trộn mảng (Fisher-Yates Shuffle)
-                for (let i = storiesArray.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [storiesArray[i], storiesArray[j]] = [storiesArray[j], storiesArray[i]];
-                }
+                // Random ngẫu nhiên
+                const selectedRecs = storiesArray.sort(() => 0.5 - Math.random()).slice(0, 4);
 
-                // Cắt lấy 4 truyện đầu tiên sau khi đã xáo trộn
-                const selectedRecs = storiesArray.slice(0, 4);
-                let html = '';
-
-                selectedRecs.forEach(story => {
+                recContainer.innerHTML = selectedRecs.map(story => {
                     const views = story.views ? formatNumber(story.views) : '0';
                     const chapters = story.chapterCount || 0;
+                    const cover = story.cover || "https://via.placeholder.com/200x300/222/555?text=WibuPad";
                     
-                    html += `
+                    return `
                         <div class="rec-item" onclick="window.location.href='doc-truyen.html?id=${story.id}'">
-                            <img src="${story.cover}" class="rec-cover" onerror="this.src='https://via.placeholder.com/200x300/222/555?text=WibuPad'">
+                            <img src="${cover}" class="rec-cover" loading="lazy">
                             <div class="rec-info">
                                 <div class="rec-title">${story.title}</div>
                                 <div class="rec-author">${story.authorName}</div>
@@ -791,23 +1121,81 @@
                             </div>
                         </div>
                     `;
-                });
+                }).join('');
 
-                recContainer.innerHTML = html;
-
-            } catch (e) {
-                console.error("Lỗi load đề cử:", e);
-                recContainer.innerHTML = '<p style="color:#666; font-size:0.9rem;">Lỗi tải đề cử.</p>';
+            } catch (e) { 
+                console.error("Lỗi đề cử:", e);
+                // Không in lỗi ra UI để tránh làm xấu giao diện, chỉ log console
             }
         }
 
-        // --- 5. CÁC SỰ KIỆN NÚT BẤM ---
-        document.getElementById('btnReadNow').onclick = () => {
-            if(firstChapterId) {
-                window.location.href = `doc.html?storyId=${storyId}&chapId=${firstChapterId}`;
-            } else {
-                alert("Truyện hiện chưa có chương nào để đọc.");
+        // --- CÁC HÀM TIỆN ÍCH KHÁC ---
+        async function checkLibraryStatus(uid) {
+            if (!storyId) return;
+            try {
+                const userDoc = await getDoc(doc(db, "users", uid));
+                if (userDoc.exists()) {
+                    const history = userDoc.data().history || [];
+                    if (history.some(item => item.id === storyId)) updateBtnStatus();
+                }
+            } catch (e) {}
+        }
+
+        function updateBtnStatus() {
+            const btn = document.getElementById('btnAddLib');
+            if(btn) {
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                btn.style.background = '#2ecc71';
+                btn.style.borderColor = '#2ecc71';
+                btn.title = "Đã có trong tủ sách";
+                btn.onclick = () => alert("Truyện này đã có trong tủ sách của bạn!");
             }
+        }
+
+        document.getElementById('btnReadNow').onclick = () => {
+            // 1. Nếu đang tải thì chặn và báo lỗi
+            if (isLoadingChapters) {
+                alert("Đang tải danh sách chương, vui lòng đợi trong giây lát...");
+                return;
+            }
+
+            // 2. Nếu tải xong nhưng không có chương
+            if (!firstChapterId) {
+                alert("Truyện này hiện chưa có chương nào để đọc.");
+                return;
+            }
+
+            // 3. Nếu mọi thứ ok -> Chuyển trang
+            window.location.href = `doc.html?storyId=${storyId}&chapId=${firstChapterId}`;
+        };
+
+// --- HÀM BẬT/TẮT POPUP ---
+        window.showAlert = (msg) => {
+            const modal = document.getElementById('alertModal');
+            document.getElementById('alertMessage').innerText = msg;
+            modal.classList.add('active');
+        }
+        
+        window.closeAlert = () => {
+            document.getElementById('alertModal').classList.remove('active');
+        }
+
+        // --- SỰ KIỆN NÚT ĐỌC (ĐÃ GẮN POPUP) ---
+        document.getElementById('btnReadNow').onclick = () => {
+            // 1. Nếu đang tải -> Hiện Popup đẹp
+            if (isLoadingChapters) {
+                showAlert("Hệ thống đang tải danh sách chương. Vui lòng đợi trong giây lát rồi thử lại!");
+                return;
+            }
+
+            // 2. Nếu tải xong mà không có chương
+            if (!firstChapterId) {
+                showAlert("Truyện này hiện chưa có chương nào để đọc. Hãy quay lại sau nhé!");
+                return;
+            }
+
+            // 3. Ok hết -> Chuyển trang
+            window.location.href = `doc.html?storyId=${storyId}&chapId=${firstChapterId}`;
         };
 
         document.getElementById('btnAddLib').onclick = async () => {
@@ -816,7 +1204,6 @@
                 window.location.href = 'login.html';
                 return;
             }
-
             const btn = document.getElementById('btnAddLib');
             const originalContent = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; 
@@ -824,11 +1211,7 @@
             try {
                 const userRef = doc(db, "users", window.currentUser.uid);
                 const userSnap = await getDoc(userRef);
-                
-                let currentHistory = [];
-                if (userSnap.exists()) {
-                    currentHistory = userSnap.data().history || [];
-                }
+                let currentHistory = userSnap.exists() ? userSnap.data().history || [] : [];
 
                 if (currentHistory.some(item => item.id === storyId)) {
                     alert("Truyện này đã có trong tủ sách rồi!");
@@ -847,15 +1230,11 @@
 
                 const newHistory = [newStory, ...currentHistory];
 
-                if (userSnap.exists()) {
-                    await updateDoc(userRef, { history: newHistory });
-                } else {
-                    await setDoc(userRef, { history: newHistory });
-                }
+                if (userSnap.exists()) await updateDoc(userRef, { history: newHistory });
+                else await setDoc(userRef, { history: newHistory });
 
                 updateBtnStatus();
                 alert("Đã lưu vào tủ sách!");
-
             } catch (e) { 
                 console.error(e);
                 btn.innerHTML = originalContent; 
@@ -869,110 +1248,20 @@
             return n >= 1000 ? (n / 1000).toFixed(1) + 'K' : n;
         }
 
-/* ==============================================
-           🔥 LOGIC TÌM KIẾM TRUYỆN TRÊN FIREBASE
-           ============================================== */
-        let searchTimeout;
-        
-        async function performSearch(keyword) {
-            const container = document.getElementById('desktopSearchResults');
-            if (!container) return;
-
-            // Nếu gõ ít hơn 2 chữ thì ẩn đi (tránh load data thừa)
-            if (!keyword || keyword.trim().length < 2) {
-                container.innerHTML = '';
-                container.classList.remove('active');
-                return;
-            }
-
-            // Hiện loading spinner
-            container.classList.add('active');
-            container.innerHTML = '<div style="color:#aaa; padding:20px; text-align:center;"><i class="fas fa-spinner fa-spin"></i> Đang tìm...</div>';
-
-            // Dùng timeout (Debounce) để người dùng gõ xong mới bắt đầu tìm, tránh gọi Database quá nhiều
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(async () => {
-                try {
-                    const searchWord = keyword.toLowerCase();
-                    
-                    // Vì Firebase không hỗ trợ Full-text search tốt, ta sẽ lấy 50 truyện mới nhất ra rồi lọc bằng Javascript (Cách này ổn cho thư viện < 1000 truyện)
-                    const q = query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(50));
-                    const snapshot = await getDocs(q);
-
-                    let html = '';
-                    let count = 0;
-
-                    snapshot.forEach(docSnap => {
-                        const m = docSnap.data();
-                        const titleLower = m.title ? m.title.toLowerCase() : "";
-                        const authorLower = m.authorName ? m.authorName.toLowerCase() : "";
-                        
-                        // Nếu tiêu đề hoặc tên tác giả chứa từ khóa
-                        if (titleLower.includes(searchWord) || authorLower.includes(searchWord)) {
-                            count++;
-                            // Chỉ lấy tối đa 8 kết quả cho đẹp
-                            if(count <= 8) {
-                                const cover = m.cover || "https://via.placeholder.com/200x300/222/555?text=WibuPad";
-                                const status = m.status === 'Published' ? 'Hoàn thành' : 'Đang ra';
-                                
-                                html += `
-                                    <div class="search-result-item" onclick="window.location.href='/doc-truyen.html?id=${docSnap.id}'">
-                                        <img src="${cover}" alt="${m.title}" loading="lazy">
-                                        <div class="search-result-info">
-                                            <div class="search-result-title">${m.title}</div>
-                                            <div class="search-result-meta">${status} • ${m.authorName || 'Ẩn danh'}</div>
-                                        </div>
-                                    </div>`;
-                            }
-                        }
-                    });
-
-                    if (html !== '') {
-                        container.innerHTML = html;
-                    } else {
-                        container.innerHTML = '<div style="color:#666; padding:20px; text-align:center;">Không tìm thấy truyện nào...</div>';
-                    }
-                } catch (e) {
-                    console.error("Lỗi tìm kiếm:", e);
-                    container.innerHTML = '<div style="color:#ff4757; padding:20px; text-align:center;">Lỗi hệ thống!</div>';
-                }
-            }, 600); // Đợi 0.6 giây sau khi người dùng ngừng gõ mới tìm
-        }
-
-        // Bắt sự kiện gõ phím trên thanh search
-        const desktopSearchInput = document.getElementById('searchInput');
-        if(desktopSearchInput) {
-            desktopSearchInput.addEventListener('input', (e) => performSearch(e.target.value));
-            
-            // Ẩn kết quả khi click chuột ra ngoài vùng tìm kiếm
-            document.addEventListener('click', (e) => {
-                const searchBox = document.querySelector('.search-box');
-                const results = document.getElementById('desktopSearchResults');
-                if (searchBox && !searchBox.contains(e.target) && results) {
-                    results.classList.remove('active');
-                }
-            });
-            
-            // Khi click lại vào ô input mà có chữ sẵn thì hiện lại kết quả
-            desktopSearchInput.addEventListener('focus', (e) => {
-                if(e.target.value.trim().length >= 2) {
-                    document.getElementById('desktopSearchResults').classList.add('active');
-                }
-            });
-        }
-
-        window.addEventListener('load', loadStoryDetail);
-
-        // Xử lý Header đổi màu khi cuộn trang
-        const headerElement = document.getElementById('siteHeader');
+        // Logic cuộn trang đổi màu Header
         window.addEventListener('scroll', () => {
-            // Nếu cuộn xuống quá 50px thì thêm nền đục, ngược lại thì trong suốt
-            if (window.scrollY > 50) {
-                headerElement.classList.add('scrolled');
-            } else {
-                headerElement.classList.remove('scrolled');
+            const header = document.getElementById('siteHeader');
+            if (header) {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
             }
         });
+
+        // Bắt đầu tải trang
+        window.addEventListener('load', loadStoryDetail);
     </script>
 </body>
 </html>

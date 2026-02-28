@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đang đọc - WibuPad</title>
-
-    <meta property="og:title" content="WibuPad - Đọc Truyện Đỉnh Cao" />
-    <meta property="og:description" content="Nền tảng đọc và sáng tác truyện chữ hàng đầu." />
     <link rel="icon" type="image/png" href="logo.png" />
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,7 +34,7 @@
         /* --- TOP NAVIGATION --- */
         .reading-header {
             position: fixed; top: 0; width: 100%; height: 60px;
-            background: rgba(15, 15, 15, 0.9); backdrop-filter: blur(15px);
+            background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(15px);
             display: flex; align-items: center; padding: 0 5%;
             z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05);
             justify-content: space-between;
@@ -52,13 +49,10 @@
             animation: fadeIn 0.8s ease;
         }
         
-        /* 🔥 Đã xóa .chapter-label */
-
-        /* 🔥 Cập nhật màu cho tiêu đề chính */
         .chapter-title { 
             font-size: 2.2rem; 
             font-weight: 800; 
-            color: var(--primary); /* Đổi màu thành đỏ */
+            color: var(--primary); 
             line-height: 1.3; 
             margin-bottom: 40px; 
         }
@@ -68,9 +62,9 @@
             font-size: 1.25rem; 
             color: var(--text-main);
             text-align: justify;
+            white-space: pre-wrap; /* Giữ định dạng xuống dòng của văn bản */
         }
-        .chapter-content p { margin-bottom: 25px; }
-
+        
         /* --- BOTTOM BAR --- */
         .nav-bottom {
             position: fixed; bottom: 0; width: 100%; height: 70px;
@@ -93,10 +87,11 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         @media (max-width: 600px) {
-            .chapter-title { font-size: 1.7rem; }
-            .chapter-content { font-size: 1.15rem; }
-            .btn-nav span { display: none; }
+            .chapter-title { font-size: 1.7rem; margin-bottom: 20px; }
+            .chapter-content { font-size: 1.15rem; line-height: 1.6; }
+            .btn-nav span { display: none; } /* Ẩn chữ trên mobile, chỉ hiện icon */
             .btn-nav { padding: 12px 20px; }
+            .reading-container { padding: 0 20px; margin-top: 80px; }
         }
 
         ::-webkit-scrollbar { width: 6px; }
@@ -115,17 +110,15 @@
         <a href="#" id="backBtn" class="back-link">
             <i class="fas fa-chevron-left"></i> <span>Quay lại</span>
         </a>
-        <div class="story-nav-title" id="navStoryTitle">Đang tải tên truyện...</div>
+        <div class="story-nav-title" id="navStoryTitle">Đang tải...</div>
         <div style="width: 80px; text-align: right;">
             <i class="fas fa-font" style="cursor:pointer; color:#666;"></i>
         </div>
     </header>
 
     <main class="reading-container">
-        <h1 class="chapter-title" id="chapTitle">Đang tải nội dung...</h1>
-        
-        <div class="chapter-content" id="chapContent">
-        </div>
+        <h1 class="chapter-title" id="chapTitle"></h1>
+        <div class="chapter-content" id="chapContent"></div>
     </main>
 
     <nav class="nav-bottom">
@@ -142,11 +135,11 @@
         </button>
     </nav>
 
-    <script src="backtotop.js"></script> 
 <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, orderBy, getDocs, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // 🔥 Import đầy đủ công cụ, đặc biệt là 'increment'
+        import { getFirestore, doc, getDoc, collection, query, orderBy, getDocs, updateDoc, increment, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Config Firebase
         const firebaseConfig = { apiKey: "AIzaSyAT6SnKojUmsisDhnuEtsL3H59NwrhZxDc", authDomain: "hopphim-29e1c.firebaseapp.com", projectId: "hopphim-29e1c", storageBucket: "hopphim-29e1c.firebasestorage.app", messagingSenderId: "1076044580405", appId: "1:1076044580405:web:a3485f8533604f305e537c", measurementId: "G-6RT4CX2NR0" };
@@ -159,48 +152,68 @@
         const chapId = urlParams.get('chapId');
 
         let allChapterIds = [];
+        let currentStoryData = null; // Biến quan trọng để lưu info truyện cho lịch sử
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) window.currentUser = user;
+        // --- 1. AUTH CHECK ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                window.currentUser = user;
+                // Nếu trang đã tải xong content mà giờ mới có user, thì lưu lại lịch sử lần nữa cho chắc
+                if (currentStoryData) {
+                    // Lấy số chương hiện tại từ URL hoặc mảng (logic đơn giản)
+                    const idx = allChapterIds.indexOf(chapId);
+                    if(idx !== -1) updateUserProgress(idx + 1);
+                }
+            }
         });
 
+        // --- 2. KHỞI TẠO TRÌNH ĐỌC ---
         async function initReader() {
             if (!storyId || !chapId) { window.location.href = 'index.html'; return; }
 
             try {
-                // 1. Lấy thông tin truyện
+                // A. TĂNG VIEW NGAY LẬP TỨC (Chạy ngầm, không chờ)
+                incrementViewCount(storyId);
+
+                // B. Lấy thông tin truyện (Để hiển thị Header & Lưu lịch sử)
                 const storySnap = await getDoc(doc(db, "stories", storyId));
                 if (storySnap.exists()) {
-                    const storyData = storySnap.data();
-                    document.getElementById('navStoryTitle').innerText = storyData.title;
-                    document.getElementById('backBtn').href = `doc-truyen.html?id=${storyId}`;
+                    currentStoryData = storySnap.data();
                     
-                    // 🔥 GỌI HÀM TĂNG VIEW
-                    incrementViewCount(storyId);
+                    document.getElementById('navStoryTitle').innerText = currentStoryData.title;
+                    document.getElementById('backBtn').href = `doc-truyen.html?id=${storyId}`;
+                } else {
+                    alert("Truyện không tồn tại!");
+                    window.location.href = 'index.html';
+                    return;
                 }
 
-                // 2. Lấy danh sách chương để làm điều hướng
+                // C. Lấy danh sách chương (Để làm điều hướng Trước/Sau)
                 const q = query(collection(db, "stories", storyId, "chapters"), orderBy("createdAt", "asc"));
                 const listSnap = await getDocs(q);
                 allChapterIds = listSnap.docs.map(d => d.id);
                 
                 const currentIndex = allChapterIds.indexOf(chapId);
-                const chapterNumber = currentIndex + 1;
+                const chapterNumber = currentIndex + 1; // Số thứ tự chương (VD: Chương 1)
 
-                // 3. Lấy nội dung chương hiện tại
+                // D. Lấy nội dung chương hiện tại
                 const chapSnap = await getDoc(doc(db, "stories", storyId, "chapters", chapId));
                 if (chapSnap.exists()) {
                     const chapData = chapSnap.data();
 
-                    // Hiển thị UI
-                    document.title = `${chapData.title} - WibuPad`;
+                    // Cập nhật giao diện
+                    document.title = `${chapData.title} - ${currentStoryData.title}`; 
                     document.getElementById('chapTitle').innerText = chapData.title;
                     document.getElementById('chapContent').innerHTML = chapData.content;
 
+                    // Cập nhật nút điều hướng
                     setupNavigation(currentIndex);
+                    
+                    // Lưu vào lịch sử đọc
                     updateUserProgress(chapterNumber);
                 }
 
+                // Tắt loading
                 document.getElementById('loading').style.display = 'none';
                 window.scrollTo(0, 0);
 
@@ -210,35 +223,38 @@
             }
         }
 
-        // 🔥 HÀM MỚI: Đã tạm tắt chống spam để bạn dễ test
+        // --- 3. TĂNG VIEW (CỘNG CON MẮT) ---
         async function incrementViewCount(id) {
-            // 👇 Khi nào test xong (F5 thấy số nhảy), bạn xóa dấu // ở 2 dòng dưới để bật lại chống spam nhé:
-            // const viewSessionKey = `viewed_${id}_${chapId}`;
-            // if (sessionStorage.getItem(viewSessionKey)) { console.log("Đã tính view rồi"); return; }
+            const viewSessionKey = `viewed_${id}_${chapId}`;
+            
+            // 👇 CHẾ ĐỘ TEST: Đang comment dòng dưới để F5 là tăng view. 
+            // Khi nào chạy thật thì bỏ comment dòng này để chặn spam nhé!
+            // if (sessionStorage.getItem(viewSessionKey)) return;
 
             try {
                 const storyRef = doc(db, "stories", id);
-                await updateDoc(storyRef, {
+                
+                // Lệnh này cộng trực tiếp vào Database
+                await updateDoc(storyRef, { 
                     views: increment(1) 
                 });
                 
-                // 👇 Xóa dấu // ở dòng dưới để bật lại chống spam
-                // sessionStorage.setItem(viewSessionKey, "true");
-                
-                console.log("✅ Đã cộng 1 view thành công trên Firebase!");
+                // Đánh dấu đã xem trong phiên này
+                sessionStorage.setItem(viewSessionKey, "true");
+                console.log("✅ Đã cộng +1 View thành công!");
             } catch (error) {
-                console.error("❌ Lỗi khi tăng view:", error);
-                // Nếu báo lỗi đỏ ở đây, 100% là do Firebase Security Rules của bạn đang chặn người đọc sửa data.
+                console.error("❌ Lỗi tăng view:", error);
             }
         }
 
+        // --- 4. ĐIỀU HƯỚNG CHƯƠNG (PREV / NEXT) ---
         function setupNavigation(index) {
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
 
             if (index > 0) {
                 prevBtn.disabled = false;
-                prevBtn.onclick = () => { window.location.href = `doc.html?storyId=${storyId}&chapId=${allChapterIds[index - 1]}`; };
+                prevBtn.onclick = () => window.location.href = `doc.html?storyId=${storyId}&chapId=${allChapterIds[index - 1]}`;
             } else {
                 prevBtn.disabled = true;
             }
@@ -246,41 +262,65 @@
             if (index < allChapterIds.length - 1) {
                 nextBtn.disabled = false;
                 nextBtn.classList.add('btn-main-nav');
-                nextBtn.onclick = () => { window.location.href = `doc.html?storyId=${storyId}&chapId=${allChapterIds[index + 1]}`; };
+                nextBtn.onclick = () => window.location.href = `doc.html?storyId=${storyId}&chapId=${allChapterIds[index + 1]}`;
             } else {
                 nextBtn.disabled = true;
                 nextBtn.classList.remove('btn-main-nav');
             }
             
-            document.getElementById('tocBtn').onclick = () => { window.location.href = `doc-truyen.html?id=${storyId}`; };
+            document.getElementById('tocBtn').onclick = () => window.location.href = `doc-truyen.html?id=${storyId}`;
         }
 
+        // --- 5. LƯU LỊCH SỬ ĐỌC (LOGIC CHỐNG TRÙNG & ĐẨY LÊN ĐẦU) ---
         async function updateUserProgress(chapNum) {
-            if (!auth.currentUser) return;
+            // Chỉ lưu khi đã có user và đã tải xong info truyện
+            if (!auth.currentUser && !window.currentUser) return;
+            if (!currentStoryData) return;
+            
             try {
-                const userRef = doc(db, "users", auth.currentUser.uid);
+                const uid = auth.currentUser ? auth.currentUser.uid : window.currentUser.uid;
+                const userRef = doc(db, "users", uid);
                 const userSnap = await getDoc(userRef);
+                
+                let history = [];
                 if (userSnap.exists()) {
-                    let history = userSnap.data().history || [];
-                    let foundIndex = history.findIndex(item => item.id === storyId);
-                    
-                    if (foundIndex !== -1) {
-                        history[foundIndex].lastChapter = chapNum;
-                        history[foundIndex].updatedAt = new Date().toISOString();
-                    } else {
-                        const storyTitle = document.getElementById('navStoryTitle').innerText || "Truyện đang đọc";
-                        history.unshift({
-                            id: storyId,
-                            title: storyTitle, 
-                            lastChapter: chapNum,
-                            updatedAt: new Date().toISOString()
-                        });
-                    }
-                    await updateDoc(userRef, { history: history });
+                    history = userSnap.data().history || [];
                 }
-            } catch (e) { console.error("Lỗi lưu tiến độ:", e); }
+
+                // 1. Lọc bỏ truyện này ra khỏi danh sách cũ (để tránh bị trùng 2 dòng)
+                const newHistory = history.filter(item => item.id !== storyId);
+
+                // 2. Tạo object truyện mới nhất với thông tin cập nhật
+                const readingItem = {
+                    id: storyId,
+                    title: currentStoryData.title,
+                    cover: currentStoryData.cover,
+                    lastChapter: chapNum, // Lưu số chương vừa đọc
+                    totalChapter: currentStoryData.chapterCount || 0,
+                    addedAt: new Date().toISOString()
+                };
+
+                // 3. Chèn lên đầu danh sách (Recent)
+                newHistory.unshift(readingItem);
+
+                // 4. Giới hạn chỉ lưu 50 truyện gần nhất để nhẹ DB
+                if (newHistory.length > 50) newHistory.pop();
+
+                // 5. Ghi vào Database
+                if (userSnap.exists()) {
+                    await updateDoc(userRef, { history: newHistory });
+                } else {
+                    await setDoc(userRef, { history: newHistory });
+                }
+                
+                console.log("📚 Đã lưu lịch sử đọc: Chap " + chapNum);
+
+            } catch (e) { 
+                console.error("Lỗi lưu tiến độ:", e); 
+            }
         }
 
+        // Khởi chạy
         window.addEventListener('load', initReader);
     </script>
 </body>

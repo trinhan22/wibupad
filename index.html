@@ -638,9 +638,9 @@
             gap: 15px;
             margin: 0 auto 40px;
             padding: 0 4%;
-            width: 80%;
+            width: 100%;
             /* 👉 SỬA: Tăng độ rộng tối đa lên 1456px */
-            max-width: 1456px; 
+            max-width: 1056px; 
         }
 
         .ad-link {
@@ -672,6 +672,104 @@
                 /* 👉 SỬA: Cập nhật tỉ lệ cho mobile cũng theo kích thước mới */
                 aspect-ratio: 1456 / 180; 
             }
+        }
+
+/* =========================================
+           6. MOBILE RESPONSIVE (TỐI ƯU HÓA)
+           ========================================= */
+        @media (max-width: 900px) {
+            /* --- Header --- */
+            header { padding: 0 15px; height: 60px; }
+            .nav-links { display: none; } /* Ẩn menu PC */
+            
+            /* Tinh chỉnh khoảng cách logo và nút login */
+            .header-left-group { gap: 0; }
+            .header-right-group { gap: 10px; }
+            .logo span { font-size: 1.3rem; } /* Logo nhỏ lại chút */
+            
+            /* Ẩn thanh tìm kiếm PC */
+            .search-box { display: none; } 
+
+            /* --- Hero Section --- */
+            .hero-wrapper { height: 70vh; }
+            .hero-content { padding: 0 15px; }
+            .hero-title { font-size: 2.2rem; line-height: 1.2; margin-bottom: 15px; }
+            .hero-desc { 
+                font-size: 1rem; 
+                margin-bottom: 25px; 
+                line-height: 1.5; 
+                /* Giới hạn 3 dòng để không chiếm hết màn hình */
+                display: -webkit-box; 
+                -webkit-line-clamp: 3; 
+                -webkit-box-orient: vertical; 
+                overflow: hidden; 
+            }
+            .hero-tag { font-size: 0.75rem; padding: 4px 12px; margin-bottom: 15px; }
+            .hero-btn { padding: 12px 30px; font-size: 1rem; }
+
+            /* --- Main Content --- */
+            .main-content { padding: 0 15px 30px; margin-top: -50px; }
+
+            /* Topic Bar - Chuyển sang trượt ngang (Scroll) */
+            .topic-bar {
+                display: flex; /* Flex để các item nằm ngang */
+                overflow-x: auto; /* Cho phép cuộn */
+                scroll-snap-type: x mandatory; /* Bắt dính khi cuộn */
+                gap: 15px;
+                padding: 20px;
+                margin-bottom: 40px;
+                scrollbar-width: none; /* Ẩn thanh cuộn Firefox */
+                grid-template-columns: none; /* Bỏ grid cũ */
+            }
+            .topic-bar::-webkit-scrollbar { display: none; } /* Ẩn thanh cuộn Chrome */
+            
+            .topic-item {
+                flex: 0 0 80px; /* Chiều rộng cố định cho mỗi icon */
+                scroll-snap-align: start;
+            }
+            .topic-icon { font-size: 1.8rem; }
+            .topic-text { font-size: 0.85rem; text-align: center; }
+
+            /* --- Section Header --- */
+            .section-header { margin-bottom: 20px; }
+            .section-title.text-gradient { font-size: 1.3rem; margin-right: 15px; }
+
+            /* --- Grid Books (Truyện) --- */
+            /* Chuyển về 2 cột cố định cho cân đối trên mobile */
+            .grid-books {
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 20px 15px; /* Giãn cách dòng 20px, cột 15px */
+            }
+
+            .book-title { font-size: 0.95rem; line-height: 1.3; }
+            .book-author { font-size: 0.8rem; }
+            .badge-status { font-size: 0.6rem; padding: 3px 8px; top: 8px; right: 8px; }
+
+            /* --- Community Card --- */
+            .community-section { padding: 0; }
+            .comm-card {
+                flex-direction: column; text-align: center; padding: 30px 20px; gap: 20px;
+            }
+            .comm-left { flex-direction: column; gap: 15px; }
+            .comm-bg-deco { font-size: 10rem; top: 10%; right: -20px; opacity: 0.1; }
+            .comm-title { font-size: 1.5rem; }
+            .comm-btn { width: 100%; justify-content: center; }
+
+            /* --- Footer --- */
+            footer { padding: 50px 20px 30px; margin-top: 60px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+            .footer-logo, .footer-socials { justify-content: center; }
+            .footer-desc { margin: 0 auto 25px; }
+            .footer-links a:hover { transform: none; color: var(--primary); }
+            
+            /* Căn giữa nút download app */
+            .footer-col:last-child div { align-items: center; }
+        }
+
+        /* --- Tablet (iPad) --- */
+        @media (min-width: 901px) and (max-width: 1100px) {
+            .grid-books { grid-template-columns: repeat(3, 1fr); }
+            .topic-bar { grid-template-columns: repeat(5, 1fr); }
         }
     </style>
 </head>
@@ -833,8 +931,8 @@
     </main>
 
     <div class="ad-panel-wrapper">
-        <a href="https://wibuphim.netlify.app" target="_blank" class="ad-link">
-            <img src="https://wibuphim.netlify.app/WIBUPHIMADS.PNG" alt="Quảng cáo" class="ad-img-728">
+        <a href="https://wibuanime.netlify.app" target="_blank" class="ad-link">
+            <img src="https://wibuphim.netlify.app/WIBUANIMEADS.PNG" alt="Quảng cáo" class="ad-img-728">
         </a>
     </div>
 

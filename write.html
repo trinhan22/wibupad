@@ -183,6 +183,111 @@
         ::-webkit-scrollbar-track { background: var(--bg-body); }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #FF5E62; }
+
+        /* =========================================
+           MOBILE OPTIMIZATION (STUDIO EDITOR)
+           ========================================= */
+        @media (max-width: 900px) {
+            /* 1. Sidebar Biến thành Drawer (Ngăn kéo) */
+            .sidebar {
+                position: fixed;
+                left: -100%; /* Mặc định ẩn sang trái */
+                top: 0;
+                bottom: 0;
+                width: 280px;
+                z-index: 9999; /* Nằm trên cùng */
+                box-shadow: 15px 0 50px rgba(0,0,0,0.8);
+                transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+            }
+            .sidebar.active {
+                left: 0; /* Hiện ra khi bấm menu */
+            }
+
+            /* 2. Thanh công cụ (Toolbar) cho phép cuộn ngang */
+            .toolbar {
+                height: 55px;
+                padding: 0 10px;
+                overflow-x: auto; /* Cho phép vuốt ngang các nút bấm */
+                white-space: nowrap;
+                display: flex;
+                align-items: center;
+                -webkit-overflow-scrolling: touch;
+            }
+            .toolbar::-webkit-scrollbar { display: none; } /* Ẩn thanh cuộn cho đẹp */
+
+            .tool-group {
+                padding-right: 10px;
+                gap: 2px;
+                flex-shrink: 0; /* Không cho các nhóm nút bị co lại */
+            }
+
+            /* 3. Khu vực soạn thảo (Editor) */
+            .editor-scroll-area {
+                padding: 20px 15px; /* Giảm padding lề */
+            }
+
+            .paper {
+                gap: 15px;
+                padding-bottom: 80px;
+            }
+
+            .input-title {
+                font-size: 1.5rem; /* Thu nhỏ tiêu đề chương */
+                padding: 5px 0;
+            }
+
+            .rich-editor {
+                font-size: 1.1rem; /* Chỉnh cỡ chữ nội dung vừa mắt mobile */
+                line-height: 1.6;
+            }
+
+            /* 4. Các nút bấm hành động */
+            .top-actions {
+                gap: 10px;
+            }
+            .btn-publish {
+                padding: 6px 15px;
+                font-size: 0.85rem;
+            }
+            .save-indicator {
+                font-size: 0.75rem;
+            }
+            .save-indicator i { font-size: 0.7rem; }
+
+            /* 5. Nút Menu Mobile (Hiện ra trên điện thoại) */
+            .mobile-menu-btn {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                width: 35px;
+                height: 35px;
+                background: rgba(255,255,255,0.05);
+                border-radius: 6px;
+                flex-shrink: 0;
+            }
+
+            /* 6. Status Bar dưới cùng */
+            .status-bar {
+                height: 30px;
+                font-size: 0.75rem;
+                padding: 0 15px;
+            }
+            .status-bar span:last-child {
+                display: none; /* Ẩn bớt chữ "WibuPad Studio..." cho rộng */
+            }
+        }
+
+        /* Thêm lớp phủ mờ khi mở Sidebar trên Mobile (Tùy chọn thêm bằng JS) */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 9998;
+            display: none;
+        }
+        .sidebar.active + .sidebar-overlay {
+            display: block;
+        }
 </style>
 </head>
 <body>
