@@ -771,6 +771,146 @@
             .grid-books { grid-template-columns: repeat(3, 1fr); }
             .topic-bar { grid-template-columns: repeat(5, 1fr); }
         }
+
+        /* --- SLIDER SECTION (Mới) --- */
+        .section-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 20px; padding-right: 15px; 
+        }
+        .section-title { font-size: 1.6rem; font-weight: 800; color: #fff; position: relative; }
+        .view-all-btn { 
+            color: var(--text-muted); font-size: 0.9rem; cursor: pointer; transition: 0.3s; 
+            display: flex; align-items: center; gap: 5px; font-weight: 600;
+        }
+        .view-all-btn:hover { color: var(--primary); }
+
+        /* Container bao quanh slider để đặt nút điều hướng */
+        .slider-container { position: relative; width: 100%; margin-bottom: 50px; }
+
+        /* Grid biến thành Slider trượt ngang */
+        .grid-books { 
+            display: flex; 
+            gap: 20px; 
+            overflow-x: auto; 
+            scroll-behavior: smooth; 
+            scrollbar-width: none; /* Ẩn thanh cuộn Firefox */
+            padding: 10px 5px; /* Padding để shadow không bị cắt */
+        }
+        .grid-books::-webkit-scrollbar { display: none; } /* Ẩn thanh cuộn Chrome */
+
+        /* Card trong slider giữ nguyên kích thước */
+        .book-card { 
+            flex: 0 0 170px; /* Chiều rộng cố định cho mỗi card */
+            transition: 0.4s; 
+        }
+        .book-card:hover { transform: translateY(-10px); z-index: 2; }
+
+        /* Nút điều hướng 2 bên */
+        .nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 45px; height: 45px; border-radius: 50%;
+            background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10; opacity: 0; transition: 0.3s;
+        }
+        .nav-btn:hover { background: var(--primary); border-color: var(--primary); }
+        .slider-container:hover .nav-btn { opacity: 1; } /* Hover vào vùng slider mới hiện nút */
+        .prev-btn { left: -20px; }
+        .next-btn { right: -20px; }
+
+        /* =========================================
+           🔥 POPUP FULL MÀN HÌNH (GIAO DIỆN MỚI)
+           ========================================= */
+        
+        /* 1. Khung nền bao phủ: Dùng Flexbox để chia dọc */
+        .modal-overlay { 
+            position: fixed; inset: 0; 
+            background: rgba(10, 10, 10, 0.95); /* Nền tối đậm đà */
+            backdrop-filter: blur(15px); /* Hiệu ứng kính mờ xịn xò */
+            z-index: 10000; /* Đè lên tất cả mọi thứ */
+            
+            display: none; 
+            flex-direction: column; /* Xếp dọc: Header ở trên, Grid ở dưới */
+            overflow: hidden; /* Chặn cuộn ở body chính */
+        }
+        
+        .modal-overlay.active { display: flex; animation: zoomIn 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* 2. Header của Popup: Luôn ghim ở trên cùng */
+        .modal-header { 
+            flex-shrink: 0; /* Không bị co lại */
+            height: 80px;
+            display: flex; justify-content: space-between; align-items: center; 
+            
+            padding: 0 40px; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            background: rgba(10, 10, 10, 0.98); /* Nền riêng để che nội dung trượt qua */
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 20;
+        }
+
+        .modal-title { 
+            font-size: 1.8rem; font-weight: 900; 
+            text-transform: uppercase; letter-spacing: 1px;
+            background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* Nút đóng (X) đẹp hơn */
+        .close-modal { 
+            font-size: 1.8rem; color: #888; 
+            cursor: pointer; transition: 0.3s; 
+            width: 45px; height: 45px; 
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+        }
+        .close-modal:hover { 
+            background: #FF5E62; color: #fff; 
+            transform: rotate(90deg) scale(1.1); 
+            box-shadow: 0 0 15px rgba(255, 94, 98, 0.5);
+        }
+        
+        /* 3. Lưới truyện: Chỉ cuộn khu vực này */
+        .modal-grid { 
+            flex: 1; /* Chiếm toàn bộ khoảng trống còn lại bên dưới */
+            overflow-y: auto; /* Cho phép cuộn dọc */
+            padding: 40px; 
+            
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+            gap: 30px; 
+            
+            /* Tùy chỉnh thanh cuộn cho đẹp */
+            scrollbar-width: thin;
+            scrollbar-color: #444 #1a1a1a;
+        }
+
+        /* Webkit Scrollbar (Chrome/Safari) */
+        .modal-grid::-webkit-scrollbar { width: 6px; }
+        .modal-grid::-webkit-scrollbar-track { background: var(--bg-body); }
+        .modal-grid::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .modal-grid::-webkit-scrollbar-thumb:hover { background: #FF5E62; }
+
+        /* Card trong Popup (To hơn card ngoài trang chủ xíu) */
+        .modal-grid .book-card {
+            transition: 0.3s;
+        }
+        .modal-grid .book-card:hover {
+            transform: translateY(-8px);
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 900px) {
+            .modal-header { height: 60px; padding: 0 20px; }
+            .modal-title { font-size: 1.2rem; }
+            .close-modal { width: 35px; height: 35px; font-size: 1.4rem; }
+            
+            .modal-grid { 
+                padding: 20px; 
+                gap: 15px; 
+                grid-template-columns: repeat(2, 1fr); /* 2 cột trên điện thoại */
+            }
+        }
     </style>
 </head>
 <body>
@@ -863,26 +1003,6 @@
             <div class="topic-item" onclick="document.getElementById('sec-hanh-dong').scrollIntoView({behavior:'smooth'})"><i class="fas fa-fire topic-icon"></i><span class="topic-text">Hành Động</span></div>
             <div class="topic-item" onclick="document.getElementById('sec-trinh-tham').scrollIntoView({behavior:'smooth'})"><i class="fas fa-search-plus topic-icon"></i><span class="topic-text">Trinh Thám</span></div>
         </div>
-
-<div class="community-section">
-    <a href="https://www.facebook.com/groups/1165263735526384/" target="_blank" class="comm-card">
-        <i class="fab fa-facebook comm-bg-deco"></i>
-        
-        <div class="comm-left">
-            <div class="comm-icon">
-                <i class="fab fa-facebook-f"></i>
-            </div>
-            <div class="comm-info">
-                <div class="comm-title">Cộng Đồng WibuTeam</div>
-                <div class="comm-desc">Tham gia Group Facebook để yêu cầu truyện, báo lỗi và chém gió cùng admin!</div>
-            </div>
-        </div>
-        
-        <div class="comm-btn">
-            Tham Gia Ngay <i class="fas fa-arrow-right"></i>
-        </div>
-    </a>
-</div>
 
     <div class="ad-panel-wrapper">
         <a href="https://wibuphim.netlify.app" target="_blank" class="ad-link">
@@ -999,6 +1119,16 @@
             &copy; 2026 WibuPad. All Rights Reserved By WibuTeam.
         </div>
     </footer>
+
+<div id="fullListModal" class="modal-overlay">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalTitle">Danh sách truyện</h2>
+            <i class="fas fa-times close-modal" onclick="closeFullList()"></i>
+        </div>
+        <div class="modal-grid" id="modalContent">
+            </div>
+    </div>
+
     <script src="backtotop.js"></script>
 <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -1084,17 +1214,135 @@
             }
         };
 
-        // --- FETCH DATA LOGIC ---
+        // --- LOGIC LOAD TRANG CHỦ MỚI ---
         async function loadAllSections() {
-            // 1. Tải truyện mới nhất (Tất cả) - Sửa limit lên 18 cho đẹp grid
-            fetchGenre('grid-new', query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(18)));
+            // Danh sách các mục cần load
+            const sections = [
+                { id: 'new', title: 'Mới Cập Nhật', query: query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(10)) },
+                { id: 'tien-hiep', title: 'Thế Giới Tiên Hiệp', query: query(collection(db, "stories"), where("category", "==", "Tiên Hiệp"), limit(10)) },
+                { id: 'ngon-tinh', title: 'Ngôn Tình Đặc Sắc', query: query(collection(db, "stories"), where("category", "==", "Ngôn Tình"), limit(10)) },
+                { id: 'linh-di', title: 'Kinh Dị - Linh Dị', query: query(collection(db, "stories"), where("category", "==", "Linh Dị"), limit(10)) },
+                { id: 'hanh-dong', title: 'Hành Động - Võ Thuật', query: query(collection(db, "stories"), where("category", "==", "Hành Động"), limit(10)) },
+                { id: 'trinh-tham', title: 'Trinh Thám - Bí Ẩn', query: query(collection(db, "stories"), where("category", "==", "Trinh Thám"), limit(10)) }
+            ];
 
-            // 2. Tải theo từng danh mục
-            fetchGenre('grid-tien-hiep', query(collection(db, "stories"), where("category", "==", "Tiên Hiệp"), limit(6)));
-            fetchGenre('grid-ngon-tinh', query(collection(db, "stories"), where("category", "==", "Ngôn Tình"), limit(6)));
-            fetchGenre('grid-linh-di', query(collection(db, "stories"), where("category", "==", "Linh Dị"), limit(6)));
-            fetchGenre('grid-hanh-dong', query(collection(db, "stories"), where("category", "==", "Hành Động"), limit(6)));
-            fetchGenre('grid-trinh-tham', query(collection(db, "stories"), where("category", "==", "Trinh Thám"), limit(6)));
+            // Render khung HTML cho từng mục trước
+            const mainContent = document.querySelector('.main-content');
+            
+            // Giữ lại cái Topic Bar, chỉ xóa các section cũ phía dưới
+            const topicBar = document.querySelector('.topic-bar');
+            mainContent.innerHTML = ''; 
+            mainContent.appendChild(topicBar);
+
+            for (const sec of sections) {
+                // Tạo khung HTML động
+                const sectionHTML = document.createElement('div');
+                sectionHTML.innerHTML = `
+                    <div class="section-header" id="sec-${sec.id}">
+                        <div class="section-title text-gradient">${sec.title}</div>
+                        <div class="view-all-btn" onclick="openFullList('${sec.title}', '${sec.id}')">
+                            Xem tất cả <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="slider-container">
+                        <button class="nav-btn prev-btn" onclick="scrollSlider('slider-${sec.id}', -1)"><i class="fas fa-chevron-left"></i></button>
+                        <div class="grid-books" id="slider-${sec.id}">
+                            <div class="empty-placeholder" style="min-width: 100%;">Đang tải...</div>
+                        </div>
+                        <button class="nav-btn next-btn" onclick="scrollSlider('slider-${sec.id}', 1)"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                `;
+                mainContent.appendChild(sectionHTML);
+
+                // Gọi hàm load dữ liệu cho mục này
+                await loadSectionData(sec.query, `slider-${sec.id}`);
+            }
+        }
+
+        // Hàm tải dữ liệu và render card
+        async function loadSectionData(q, containerId) {
+            const container = document.getElementById(containerId);
+            try {
+                const snapshot = await getDocs(q);
+                if (!snapshot.empty) {
+                    let html = '';
+                    snapshot.forEach(docSnap => {
+                        html += createCardHTML(docSnap);
+                    });
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<div style="color:#666; padding:20px; min-width:100%; text-align:center;">Chưa có truyện nào.</div>';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // Hàm tạo HTML cho 1 Card (Dùng chung)
+        function createCardHTML(docSnap) {
+            const d = docSnap.data();
+            const safeTitle = d.title ? d.title.replace(/'/g, "\\'") : "Chưa đặt tên";
+            const safeCover = d.cover || "https://via.placeholder.com/200x300/222/555?text=WibuPad";
+            const safeAuthor = d.authorName || 'Tác giả ẩn danh';
+            const safeStatus = d.status === 'Published' ? 'Full' : 'On-going';
+
+            return `
+                <div class="book-card" onclick="window.location.href='/doc-truyen.html?id=${docSnap.id}'">
+                    <div class="book-cover">
+                        <div class="badge-status">${safeStatus}</div>
+                        <img src="${safeCover}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300/222/555?text=WibuPad'">
+                        <div class="card-overlay">
+                            <button class="btn-overlay btn-play-ovl" title="Đọc ngay"><i class="fas fa-play"></i></button>
+                        </div>
+                    </div>
+                    <div class="book-meta">
+                        <div class="book-title" title="${d.title}">${d.title}</div>
+                        <div class="book-author">${safeAuthor}</div>
+                    </div>
+                </div>`;
+        }
+
+        // --- HÀM SCROLL SLIDER ---
+        window.scrollSlider = (id, direction) => {
+            const slider = document.getElementById(id);
+            const scrollAmount = 600; // Khoảng cách trượt
+            slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
+
+        // --- HÀM MỞ POPUP FULL LIST ---
+        window.openFullList = async (title, typeId) => {
+            const modal = document.getElementById('fullListModal');
+            const container = document.getElementById('modalContent');
+            
+            document.getElementById('modalTitle').innerText = title;
+            modal.classList.add('active');
+            container.innerHTML = '<div style="text-align:center; color:#fff; width:100%; padding:50px;"><i class="fas fa-circle-notch fa-spin" style="font-size:2rem;"></i><br>Đang tải...</div>';
+
+            // Tạo query lấy TẤT CẢ (hoặc 50 truyện) của thể loại đó
+            let q;
+            if(typeId === 'new') {
+                q = query(collection(db, "stories"), orderBy("createdAt", "desc"), limit(50));
+            } else {
+                // Map lại ID sang Tên Thể Loại chuẩn trong DB
+                const catMap = {
+                    'tien-hiep': 'Tiên Hiệp', 'ngon-tinh': 'Ngôn Tình', 'linh-di': 'Linh Dị',
+                    'hanh-dong': 'Hành Động', 'trinh-tham': 'Trinh Thám'
+                };
+                q = query(collection(db, "stories"), where("category", "==", catMap[typeId]), limit(50));
+            }
+
+            try {
+                const snapshot = await getDocs(q);
+                if (!snapshot.empty) {
+                    let html = '';
+                    snapshot.forEach(docSnap => html += createCardHTML(docSnap));
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<div style="text-align:center; color:#888; width:100%;">Không tìm thấy truyện nào.</div>';
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        window.closeFullList = () => {
+            document.getElementById('fullListModal').classList.remove('active');
         }
 
         async function fetchGenre(elementId, q) {
