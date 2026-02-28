@@ -161,113 +161,175 @@
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
 /* =========================================
-           MOBILE OPTIMIZATION (RESPONSIVE)
+           MOBILE OPTIMIZATION (PROFILE)
            ========================================= */
         @media (max-width: 900px) {
-            /* 1. Reset bố cục trang */
+            /* 1. Layout Reset - Chuyển về 1 cột dọc */
             .profile-container {
-                grid-template-columns: 1fr; /* 1 cột duy nhất */
-                padding: 15px;
-                gap: 20px;
+                grid-template-columns: 1fr;
+                padding: 20px 15px;
+                gap: 25px;
+                display: flex;
+                flex-direction: column;
             }
 
-            /* 2. Sidebar trên Mobile */
+            /* 2. Sidebar & User Info */
             .sidebar {
-                position: static; /* Không ghim nữa */
+                position: static; /* Bỏ ghim dính */
                 padding: 25px 20px;
-                border-radius: 20px;
-                margin-bottom: 10px;
+                margin-bottom: 0;
+                width: 100%;
+                border: 1px solid var(--glass-border);
             }
-            .user-preview { margin-bottom: 25px; }
-            .avatar-wrapper { width: 90px; height: 90px; }
-            .preview-name { font-size: 1.1rem; }
+
+            .user-preview { 
+                margin-bottom: 20px; 
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
             
-            /* Chuyển menu list sang dạng linh hoạt hơn */
+            .avatar-wrapper { 
+                width: 100px; 
+                height: 100px; 
+            }
+            
+            /* Menu biến thành dạng lưới 2 cột dễ bấm */
             .menu-list {
                 display: grid;
-                grid-template-columns: repeat(2, 1fr); /* Chia 2 cột menu */
+                grid-template-columns: repeat(2, 1fr); 
                 gap: 10px;
             }
+
             .menu-item {
                 margin-bottom: 0;
-                padding: 10px 15px;
-                font-size: 0.85rem;
+                padding: 12px 10px;
+                font-size: 0.9rem;
                 justify-content: center;
                 border-left: none;
                 border-bottom: 2px solid transparent;
-            }
-            .menu-item.active {
-                background: rgba(255, 94, 98, 0.1);
-                border-bottom-color: var(--primary);
-            }
-            .btn-back { margin-top: 15px; font-size: 0.85rem; }
-
-            /* 3. Panel Nội dung */
-            .content-panel {
-                padding: 30px 20px;
-                border-radius: 20px;
-                min-height: auto;
-            }
-            .panel-title {
-                font-size: 1.5rem;
-                margin-bottom: 25px;
-            }
-
-            /* 4. Form nhập liệu */
-            .form-grid {
-                grid-template-columns: 1fr; /* Form luôn 1 cột */
-                gap: 15px;
-            }
-            .form-group.full { grid-column: auto; }
-            .upload-area {
-                flex-direction: column; /* Avatar và nút chọn ảnh nằm dọc */
+                background: rgba(255,255,255,0.05);
+                border-radius: 12px;
+                flex-direction: row; /* Icon và chữ nằm ngang */
+                gap: 8px;
                 text-align: center;
-                padding: 20px;
             }
-            .btn-save {
-                width: 100%; /* Nút lưu to bản dễ bấm */
-                padding: 15px;
+            
+            .menu-item.active {
+                background: rgba(255, 94, 98, 0.15);
+                border-bottom: none;
+                border: 1px solid var(--primary);
+                color: #fff;
+            }
+            
+            /* Nút Đăng xuất full width cho nổi bật */
+            .menu-item:last-child {
+                grid-column: span 2; 
+                background: rgba(255, 71, 87, 0.1);
+                color: #ff4757;
+                border: 1px solid rgba(255, 71, 87, 0.3);
             }
 
-            /* 5. Tủ sách chuẩn Mobile */
+            .btn-back { 
+                margin-top: 20px; 
+                padding: 14px;
+                font-size: 0.95rem;
+            }
+
+            /* 3. Content Panel */
+            .content-panel {
+                padding: 25px 20px;
+                min-height: auto; /* Chiều cao tự động */
+            }
+
+            .panel-title {
+                font-size: 1.6rem;
+                margin-bottom: 25px;
+                text-align: center;
+                border-bottom: 1px solid var(--glass-border);
+                padding-bottom: 15px;
+            }
+
+            /* 4. Form Nhập Liệu */
+            .form-grid {
+                grid-template-columns: 1fr; /* Form xếp chồng dọc */
+                gap: 20px;
+            }
+            
+            /* Khu vực upload ảnh */
+            .upload-area {
+                flex-direction: column;
+                text-align: center;
+                padding: 25px;
+                gap: 20px;
+            }
+            
+            #coverPreview {
+                width: 110px !important;
+                height: 110px !important;
+                margin-bottom: 5px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            }
+            
+            .file-input-btn {
+                width: 100%;
+                display: block;
+                text-align: center;
+                padding: 12px;
+            }
+
+            .btn-save {
+                width: 100%;
+                padding: 16px;
+                font-size: 1rem;
+                margin-top: 10px;
+            }
+
+            /* 5. Tủ Sách Mobile */
             .lib-grid {
-                grid-template-columns: repeat(2, 1fr); /* 2 truyện mỗi hàng */
+                grid-template-columns: repeat(2, 1fr); /* 2 truyện/hàng */
                 gap: 15px;
             }
-            .lib-title { font-size: 0.9rem; }
-            .lib-info { padding: 10px; }
+            
+            .lib-title {
+                font-size: 0.9rem;
+                line-height: 1.3;
+                height: 2.6em; /* Giới hạn chiều cao tên truyện */
+            }
+            
+            /* Luôn hiện nút xóa trên mobile (vì ko có hover) */
             .btn-remove {
-                opacity: 1; /* Luôn hiện nút xóa trên mobile vì không có hover */
+                opacity: 1;
+                transform: scale(1);
                 width: 35px;
                 height: 35px;
                 background: rgba(0,0,0,0.8);
+                border: 1px solid rgba(255,255,255,0.4);
             }
 
-            /* 6. Modal Popup */
+            /* 6. Settings & Modal */
+            .setting-row {
+                padding: 15px 0;
+            }
+            .setting-label h3 { font-size: 1rem; }
+            .setting-label p { font-size: 0.8rem; opacity: 0.7; }
+
             .c-modal-box {
                 width: 90%;
                 padding: 30px 20px;
             }
             .c-btn {
-                width: 45%;
-                margin: 0 5px;
-                padding: 12px 10px;
-                font-size: 0.9rem;
+                width: 100%;
+                margin: 0 5px; 
+                flex: 1;
             }
-            
-            /* 7. Settings */
-            .setting-row {
-                flex-direction: row;
-                align-items: center;
-            }
-            .setting-label h3 { font-size: 0.95rem; }
-            .setting-label p { font-size: 0.8rem; }
         }
 
-        /* Dành riêng cho màn hình siêu nhỏ */
-        @media (max-width: 400px) {
-            .menu-list { grid-template-columns: 1fr; } /* Menu dọc hoàn toàn */
-            .lib-grid { grid-template-columns: 1fr; } /* 1 truyện mỗi hàng */
+        /* Màn hình siêu nhỏ (iPhone SE, v.v.) */
+        @media (max-width: 380px) {
+            .lib-grid { grid-template-columns: 1fr; } /* 1 truyện/hàng */
+            .menu-list { grid-template-columns: 1fr; } /* Menu dọc */
+            .menu-item:last-child { grid-column: auto; }
         }
 </style>
 </head>
