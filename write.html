@@ -145,7 +145,6 @@
         /* Status Bar */
         .status-bar {
             position: absolute; bottom: 0; left: 0; right: 0; height: 35px;
-            background: var(--bg-sidebar); border-top: 1px solid var(--border);
             display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
             font-size: 0.8rem; color: var(--text-muted);
         }
@@ -265,16 +264,6 @@
                 border-radius: 6px;
                 flex-shrink: 0;
             }
-
-            /* 6. Status Bar dưới cùng */
-            .status-bar {
-                height: 30px;
-                font-size: 0.75rem;
-                padding: 0 15px;
-            }
-            .status-bar span:last-child {
-                display: none; /* Ẩn bớt chữ "WibuPad Studio..." cho rộng */
-            }
         }
 
         /* Thêm lớp phủ mờ khi mở Sidebar trên Mobile (Tùy chọn thêm bằng JS) */
@@ -367,7 +356,6 @@
 
         <div class="status-bar">
             <span id="wordCount">0 từ</span>
-            <span>WibuPad Studio v1.0</span>
         </div>
     </div>
 
