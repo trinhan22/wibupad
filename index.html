@@ -1128,8 +1128,6 @@
         if (user) {
             // Lưu thông tin vào bộ nhớ đệm để lần sau load cho lẹ
             localStorage.setItem('my_uid', user.uid);
-            
-            // Nếu có tên mới thì lưu, chưa có thì lấy tạm tên cũ
             if(user.displayName) localStorage.setItem('my_name', user.displayName);
             
             // Cập nhật giao diện Header
@@ -1142,6 +1140,8 @@
 
             document.getElementById('userAvatar').src = finalAvatar;
             document.getElementById('dropdownName').innerText = finalName;
+
+            updateMyStoriesUI(user.uid, finalName);
         } else {
             // Xóa bộ nhớ nếu đăng xuất
             localStorage.removeItem('my_uid');

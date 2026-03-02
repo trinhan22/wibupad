@@ -461,7 +461,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Config Firebase
         const firebaseConfig = { apiKey: "AIzaSyAT6SnKojUmsisDhnuEtsL3H59NwrhZxDc", authDomain: "hopphim-29e1c.firebaseapp.com", projectId: "hopphim-29e1c", storageBucket: "hopphim-29e1c.firebasestorage.app", messagingSenderId: "1076044580405", appId: "1:1076044580405:web:a3485f8533604f305e537c", measurementId: "G-6RT4CX2NR0" };
@@ -525,7 +525,7 @@
             throw new Error("Không thể tải ảnh lên ImgBB");
         }
 
-        // --- HÀM CẬP NHẬT PROFILE (ĐÃ FIX LẠI CÁCH UPLOAD) ---
+        // --- HÀM CẬP NHẬT PROFILE (ĐÃ CÓ TÍNH NĂNG ĐỒNG BỘ TÊN TÁC GIẢ) ---
         window.updateUserProfile = async (e) => {
             e.preventDefault();
             const user = auth.currentUser;
@@ -546,35 +546,49 @@
             btn.disabled = true;
 
             try {
-                let finalAvatarUrl = oldAvatar; // Giữ avatar cũ nếu không chọn file mới
+                // 1. Xử lý ảnh (nếu có)
+                let finalAvatarUrl = oldAvatar; 
                 if (file) {
                     btn.innerText = "Đang tải ảnh lên...";
                     finalAvatarUrl = await uploadImageToImgBB(file);
                 }
 
-                // 1. Cập nhật Firebase Auth (Chứng minh thư)
-                await updateProfile(user, {
-                    displayName: newName,
-                    photoURL: finalAvatarUrl
-                });
-
-                // 2. Cập nhật Firestore (Hồ sơ database)
+                // 2. Cập nhật Firebase Auth & User Profile
+                await updateProfile(user, { displayName: newName, photoURL: finalAvatarUrl });
                 const userRef = doc(db, "users", user.uid);
-                await updateDoc(userRef, {
-                    displayName: newName,
-                    photoURL: finalAvatarUrl
-                });
+                await updateDoc(userRef, { displayName: newName, photoURL: finalAvatarUrl });
 
-                // 3. Ép browser lấy token mới
+                // 🔥 BƯỚC MỚI: TÌM VÀ SỬA TÊN TRONG TẤT CẢ TRUYỆN CŨ 🔥
+                btn.innerText = "Đang đồng bộ tên truyện...";
+                
+                // Tìm tất cả truyện của tác giả này
+                const q = query(collection(db, "stories"), where("authorId", "==", user.uid));
+                const querySnapshot = await getDocs(q);
+
+                // Tạo danh sách các lệnh cập nhật chạy song song
+                const updatePromises = querySnapshot.docs.map(storyDoc => 
+                    updateDoc(storyDoc.ref, { authorName: newName }) 
+                );
+                
+                if(updatePromises.length > 0) {
+                    await Promise.all(updatePromises);
+                    console.log(`Đã cập nhật tên mới cho ${updatePromises.length} truyện.`);
+                }
+
+                // 3. Hoàn tất & Cập nhật bộ nhớ đệm
                 await user.reload();
-
+                
+                // Lưu ngay vào localStorage để các trang khác nhận diện được ngay
+                localStorage.setItem('my_name', newName); 
+                
                 showToast("Cập nhật thành công!");
 
-                // Cập nhật giao diện ngay lập tức
+                // Cập nhật giao diện bên thanh sidebar ngay lập tức
                 document.getElementById('sidebarName').innerText = newName;
-                document.getElementById('sidebarAvatar').src = finalAvatarUrl || `https://ui-avatars.com/api/?name=${newName}&background=FF5E62&color=fff`;
+                document.getElementById('sidebarAvatar').src = finalAvatarUrl;
 
-                setTimeout(() => window.location.reload(), 1000);
+                // Load lại trang sau 1.5s
+                setTimeout(() => window.location.reload(), 1500);
 
             } catch (error) {
                 console.error(error);
