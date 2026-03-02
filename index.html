@@ -1123,15 +1123,30 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // --- AUTH LOGIC ---
+    // --- 1. AUTH LOGIC (ĐÃ TỐI ƯU TỐC ĐỘ) ---
     onAuthStateChanged(auth, async (user) => {
         if (user) {
+            // Lưu thông tin vào bộ nhớ đệm để lần sau load cho lẹ
+            localStorage.setItem('my_uid', user.uid);
+            
+            // Nếu có tên mới thì lưu, chưa có thì lấy tạm tên cũ
+            if(user.displayName) localStorage.setItem('my_name', user.displayName);
+            
+            // Cập nhật giao diện Header
             window.currentUser = user;
             document.getElementById('btnLogin').style.display = 'none';
             document.getElementById('userContainer').style.display = 'block';
-            document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}&background=FF5E62&color=fff`;
-            document.getElementById('dropdownName').innerText = user.displayName || "Thành viên";
+            
+            const finalName = user.displayName || localStorage.getItem('my_name') || "Thành viên";
+            const finalAvatar = user.photoURL || `https://ui-avatars.com/api/?name=${finalName}&background=FF5E62&color=fff`;
+
+            document.getElementById('userAvatar').src = finalAvatar;
+            document.getElementById('dropdownName').innerText = finalName;
         } else {
+            // Xóa bộ nhớ nếu đăng xuất
+            localStorage.removeItem('my_uid');
+            localStorage.removeItem('my_name');
+            
             window.currentUser = null;
             document.getElementById('btnLogin').style.display = 'block';
             document.getElementById('userContainer').style.display = 'none';
@@ -1226,13 +1241,24 @@
         } catch (e) { console.error(e); }
     }
 
-    // --- TẠO HTML CARD TRUYỆN ---
+    // --- HÀM TẠO HTML CARD TRUYỆN (HIỂN THỊ TÊN ĐÚNG NGAY LẬP TỨC) ---
     function createCardHTML(docSnap) {
         const d = docSnap.data();
         const safeTitle = d.title ? d.title.replace(/'/g, "\\'") : "Vô danh";
         const safeCover = d.cover || "https://via.placeholder.com/200x300";
-        const safeAuthor = d.authorName || 'Ẩn danh';
+        let safeAuthor = d.authorName || 'Ẩn danh';
+        const safeAuthorId = d.authorId || '';
         const statusBadge = d.status === 'Published' ? '<div class="badge-status" style="background:#2ecc71;">Full</div>' : '<div class="badge-status">On-going</div>';
+
+        // 🔥 LOGIC KHỬ DELAY:
+        // Lấy ID và Tên của chính mình từ bộ nhớ trình duyệt
+        const myUid = localStorage.getItem('my_uid');
+        const myName = localStorage.getItem('my_name');
+
+        // Nếu ID tác giả trùng với ID của tui -> Dùng tên của tui ngay lập tức!
+        if (myUid && safeAuthorId === myUid && myName) {
+            safeAuthor = myName; 
+        }
 
         return `
             <div class="book-card" onclick="window.location.href='/doc-truyen.html?id=${docSnap.id}'">
@@ -1256,7 +1282,17 @@
                 </div>
             </div>`;
     }
-
+    
+    // --- HÀM TỰ ĐỘNG CẬP NHẬT TÊN TÁC GIẢ ---
+    function updateMyStoriesUI(uid, newName) {
+        // Tìm tất cả các thẻ truyện có ID tác giả trùng với ID của bạn
+        const myBooks = document.querySelectorAll(`.book-card[data-author-id="${uid}"] .dynamic-author`);
+        
+        myBooks.forEach(el => {
+            el.innerText = newName; // Thay thế tên cũ bằng tên mới
+        });
+    }
+    
     // --- 🔥 CÁC HÀM GẮN VÀO WINDOW ĐỂ GỌI TỪ HTML ---
 
     // 1. Sáng tác

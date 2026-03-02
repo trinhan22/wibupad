@@ -952,11 +952,36 @@
         let isLoadingChapters = true;
 
         // --- 1. AUTH CHECK ---
+        // --- 1. AUTH CHECK & TỰ ĐỘNG CẬP NHẬT TÊN ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                // A. Ép tải thông tin mới nhất từ Server (để lấy tên vừa đổi)
+                await user.reload();
                 window.currentUser = auth.currentUser;
-                document.getElementById('headerAvatar').src = window.currentUser.photoURL || `https://ui-avatars.com/api/?name=${window.currentUser.displayName}&background=FF5E62&color=fff`;
+                
+                // B. Lưu cache bộ nhớ để dùng cho các trang khác
+                localStorage.setItem('my_uid', window.currentUser.uid);
+                if(window.currentUser.displayName) localStorage.setItem('my_name', window.currentUser.displayName);
+
+                // C. Cập nhật Avatar Header
+                const finalAvatar = window.currentUser.photoURL || `https://ui-avatars.com/api/?name=${window.currentUser.displayName}&background=FF5E62&color=fff`;
+                document.getElementById('headerAvatar').src = finalAvatar;
+                
+                // D. Kiểm tra trạng thái tủ sách
                 checkLibraryStatus(window.currentUser.uid);
+
+                // 🔥 E. LOGIC ĐỔI TÊN: Nếu truyện này là của tui, hãy đổi tên tác giả ngay!
+                // Biến storyDataGlobal được gán khi loadStoryDetail chạy xong
+                if (storyDataGlobal && storyDataGlobal.authorId === window.currentUser.uid) {
+                    const newName = window.currentUser.displayName || localStorage.getItem('my_name');
+                    if (newName) {
+                        document.getElementById('storyAuthor').innerText = newName;
+                        // Cập nhật luôn avatar tác giả nếu có
+                        if (window.currentUser.photoURL) {
+                            document.getElementById('authorAvatar').src = window.currentUser.photoURL;
+                        }
+                    }
+                }
             }
         });
 
@@ -1003,7 +1028,20 @@
             document.getElementById('valReads').innerText = formatNumber(data.views || 0);
             document.getElementById('valVotes').innerText = formatNumber(data.votes || 0);
             document.getElementById('valChapters').innerText = data.chapterCount || 0;
-            document.getElementById('storyAuthor').innerText = data.authorName || "Tác giả ẩn danh";
+
+            // 🔥 LOGIC HIỂN THỊ TÊN THÔNG MINH (KHỬ DELAY)
+            let authorName = data.authorName || "Tác giả ẩn danh";
+            
+            // Lấy thông tin từ bộ nhớ trình duyệt
+            const myUid = localStorage.getItem('my_uid');
+            const myName = localStorage.getItem('my_name');
+
+            // Nếu ID tác giả truyện trùng với ID của tui trong bộ nhớ -> Dùng tên tui luôn!
+            if (myUid && data.authorId === myUid && myName) {
+                authorName = myName;
+            }
+
+            document.getElementById('storyAuthor').innerText = authorName;
 
             // Render Hashtag
             const tagsContainer = document.getElementById('storyTags');
